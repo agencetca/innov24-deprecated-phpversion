@@ -1,0 +1,465 @@
+/*<!-- W.I.P CSS -->*/
+
+.titledivbox
+{
+	width: 230px;
+	height: auto;
+	margin-right: auto;
+	margin-left: auto;
+	background: none repeat scroll 0 0 #FFF;
+ 	border-radius: 6px;
+ 	-webkit-border-radius: 6px;
+ 	-moz-border-radius: 6px;
+ 	box-shadow: 0 0 3px #999;
+ 	-webkit-box-shadow: 0 0 3px #999;
+ 	-moz-box-shadow: 0 0 3px #999;
+ 	padding: 4px 4px 4px 4px;
+ 	text-align: center;
+}
+.eventicon {
+ 	background: url("icons/events.png") no-repeat scroll 0 0 transparent;
+ 	height:16px;
+}
+.newsicon {
+	background: url("icons/typewriter.png") no-repeat scroll 0 0 transparent;
+ 	height:16px;
+}
+.projecticon {
+	background: url("icons/mediaprod.png") no-repeat scroll 0 0 transparent;
+ 	height:16px;
+}
+.titledivstyle
+{
+
+}
+.titleitembox
+{
+	padding-top: 3px;
+}
+.titledivstyle a
+	{
+	font-weight: bold;
+	color: #999;
+	text-transform: uppercase;
+	font-size: 9px;
+	}
+
+/*scroll des sections*/
+
+.scroll3col{
+	background:transparent;
+	overflow:hidden;
+	overflow-x: hidden;
+	overflow-y: auto;
+	margin-top: 2px;
+	max-height:1200px;
+	}
+
+/*<!-- items -->*/
+.boxcontent
+{
+	width: 215px;
+	height: auto;
+	background: none repeat scroll 0 0 #FFF;
+ 	border-radius: 6px;
+ 	-webkit-border-radius: 6px;
+ 	-moz-border-radius: 6px;
+ 	box-shadow: 0 0 3px #999;
+ 	-webkit-box-shadow: 0 0 3px #999;
+ 	-moz-box-shadow: 0 0 3px #999;
+ 	margin: 7px 7px;
+ 	padding: 10px 10px 10px 10px;
+ 	overflow: hidden;
+}
+.boxcontent:hover
+{
+	box-shadow: 0 0 3px #000;
+ 	-webkit-box-shadow: 0 0 3px #000;
+ 	-moz-box-shadow: 0 0 3px #000;
+}
+.Modboxcontent
+{
+	width: 215px;
+	height: auto;
+	background: none repeat scroll 0 0 #F3F3F3;
+ 	border-radius: 6px;
+ 	-webkit-border-radius: 6px;
+ 	-moz-border-radius: 6px;
+ 	box-shadow: 0 0 3px #999;
+ 	-webkit-box-shadow: 0 0 3px #999;
+ 	-moz-box-shadow: 0 0 3px #999;
+ 	margin: 7px 7px;
+ 	padding: 10px 10px 10px 10px;
+ 	overflow: hidden;
+}
+.Modboxcontent:hover
+{
+	box-shadow: 0 0 3px #000;
+ 	-webkit-box-shadow: 0 0 3px #000;
+ 	-moz-box-shadow: 0 0 3px #000;
+}
+.topElement
+{
+	width: auto;
+	height: 20%;
+}
+.typebox
+{
+	max-width: 80%;
+	height: auto;
+	position: relative;
+	float: left;
+}
+.typestyle
+{
+	font-weight: bold;
+	font-size: 14px;
+	text-align: left;
+ 	color: #FFBEA3;
+}
+.Modtypestyle
+{
+	font-weight: bold;
+	font-size: 14px;
+	text-align: left;
+ 	color: #FFBEA3;
+ 	opacity: 0.5;
+}
+.picbox
+{
+	max-width: 20%;
+	height: auto;
+	position: relative;
+	float: right;
+}
+.middleElement
+{
+	width: auto;
+	height: 70%;
+}
+.titlebox
+{
+	width: 100%;
+	height: auto;
+	position: relative;
+	float: left;
+	overflow: hidden;
+	text-align: justify;
+}
+.titlestyle a
+{
+	font-weight: bold;
+	font-size:10px;
+	/*text-transform: uppercase;*/
+}
+.Modtitlestyle a
+{
+	font-weight: bold;
+	font-size:10px;
+	/*text-transform: uppercase;*/
+	opacity: 0.5;
+}
+.bxcategorybox
+{
+	width: 100%;
+	height: auto;
+	position: relative;
+	float: left;
+}
+.bxcategorystyle
+{
+	font-weight:bold;
+	color:#FF0000;
+}
+.Modbxcategorystyle
+{
+	font-weight:bold;
+	color:#FF0000;
+	opacity: 0.5;
+}
+.datebox
+{
+	width: 100%;
+	height: auto;
+	position: relative;
+	float:left;
+	text-align: center;
+}
+.datestyle
+{
+ 	text-transform: uppercase;
+ 	font-weight: bold;
+ 	color: #999;
+ 	border-width: 1px;
+ 	border-style: dashed;
+ 	border-color: #999;
+ 	padding: 2px 2px 2px 2px;
+}
+.bottomElement
+{
+	width: auto;
+	height: 10%;
+}
+.fansbox
+{
+	width: auto;
+	height: 16px;
+	position: relative;
+	float: right;
+	/*margin-top: 20px;*/
+}
+.fanscount
+{
+	height: auto;
+	position: relative;
+	float: right;
+}
+.fanspic
+{
+	width: 16px;
+	height: 16px;
+	position: relative;
+	float: right;
+	background: url("icons/participant.png") no-repeat scroll 0 0 transparent;
+}
+.Modfanspic
+{
+	width: 16px;
+	height: 16px;
+	position: relative;
+	float: right;
+	background: url("icons/participant.png") no-repeat scroll 0 0 transparent;
+	opacity: 0.5
+}
+.viewspic
+{
+	width: 16px;
+	height: 16px;
+	position: relative;
+	float: right;
+	background: url("icons/eye.png") no-repeat scroll 0 0 transparent;
+}
+.Modviewspic
+{
+	width: 16px;
+	height: 16px;
+	position: relative;
+	float: right;
+	background: url("icons/participant.png") no-repeat scroll 0 0 transparent;
+	opacity: 0.5
+}
+.picON
+{
+	background: url("icons/EvtON.png") no-repeat scroll 0 0 transparent;
+	width: 16px;
+	height: 16px;
+	opacity: 0.9;
+}
+.picOFF
+{
+	background: url("icons/EvtOFF.png") no-repeat scroll 0 0 transparent;
+	width: 16px;
+	height: 16px;
+}
+.ModpicOFF
+{
+	background: url("icons/EvtOFF.png") no-repeat scroll 0 0 transparent;
+	width: 16px;
+	height: 16px;
+	opacity: 0.5;
+}
+
+/*<!-- Specific (Not Activated + Lifetime not expired) items -->*/
+.modifiedmsgbox
+{
+	width: 100%;
+	height: auto;
+	position: relative;
+	float:left;
+}
+.modifiedmsgstyle
+{
+	color :grey;
+ 	font-weight: bold;
+ 	font-size: 14px;
+ 	padding-top: 3px;
+ 	padding-bottom: 3px;
+}
+.requestbox
+{
+	width: auto;
+	height: auto;
+	position: relative;
+	float:left;
+}
+.requeststyle
+{
+	font-weight: normal;
+	text-align: left;
+}
+.editbox
+{
+	width: auto;
+	height: auto;
+	position: relative;
+	float:left;
+}
+.editstyle
+{
+	font-weight: normal;
+	text-align: left;
+}
+
+/*<!-- Specific (Not Events) message -->*/
+.noitems
+{
+	background: none repeat scroll 0 0 #FFF;
+ 	border-radius: 6px;
+ 	-webkit-border-radius: 6px;
+ 	-moz-border-radius: 6px;
+ 	box-shadow: 0 0 3px #999;
+ 	-webkit-box-shadow: 0 0 3px #999;
+ 	-moz-box-shadow: 0 0 3px #999;
+ 	margin: 2px 6px 10px;
+ 	padding: 6px 0 5px 5px;
+ 	text-align:center;
+ 	color :#8D8899;
+ 	font-weight: bold;
+}
+
+
+/*ANCIENNES CLASSES*/
+
+.menutableau { /*boxcontent*/
+ background: none repeat scroll 0 0 #FFF;
+ border-radius: 6px;
+ -webkit-border-radius: 6px;
+ -moz-border-radius: 6px;
+ box-shadow: 0 0 3px #999;
+ -webkit-box-shadow: 0 0 3px #999;
+ -moz-box-shadow: 0 0 3px #999;
+ margin: 7px 7px;
+ padding: 10px 10px 10px 10px;
+ overflow: hidden;
+ }
+.menutableau:hover { /*boxcontent:hover*/
+ box-shadow: 0 0 3px #000;
+ -webkit-box-shadow: 0 0 3px #000;
+ -moz-box-shadow: 0 0 3px #000;
+ }
+ .type_global{ /*typebox*/
+ font-weight:bold;
+ color:#FFBEA3;
+ text-align:left;
+ font-size:14px;
+ padding-bottom:5px;
+ }
+ .rigamenuperso { /*titlebox*/
+ font-weight: normal;
+}
+.rigamenuperso a { /*titlebox a*/
+ font-weight: bold;
+}
+.rigamenutitleEvent { /*titlebox2*/
+ font-weight: bold;
+}
+.menu3colrefresh3 { /*boonexcategorybox*/
+padding-top:5px;
+font-weight:bold;
+color:#FF0000;
+}
+.decaleHaut{ /*attributesbox*/
+padding-top:0px;
+}
+.rigamenudate { /*datebox*/
+width: 90%; 
+ font-weight: normal;
+}
+.rigamenumodifiedevent { /*modifiedmsgbox*/
+ color :#8D8899;
+ font-weight: bold;
+ font-size: 14px;
+ padding-top: 3px;
+ padding-bottom: 3px;
+}
+.rigamenumodifiedevent2 a { /*requestbox*/
+font-weight: normal;
+}
+.rigamenumodificadx2 { /*noitems*/
+ background: none repeat scroll 0 0 #FFF;
+ border-radius: 6px;
+ -webkit-border-radius: 6px;
+ -moz-border-radius: 6px;
+ box-shadow: 0 0 3px #999;
+ -webkit-box-shadow: 0 0 3px #999;
+ -moz-box-shadow: 0 0 3px #999;
+ margin: 2px 6px 10px;
+ padding: 6px 0 5px 5px;
+ text-align:center;
+ color :#8D8899;
+ font-weight: bold;
+}
+.menu3colrefresh2 { /*titlediv*/
+ background: none repeat scroll 0 0 #FFF;
+ border-radius: 6px;
+ -webkit-border-radius: 6px;
+ -moz-border-radius: 6px;
+ box-shadow: 0 0 3px #999;
+ -webkit-box-shadow: 0 0 3px #999;
+ -moz-box-shadow: 0 0 3px #999;
+ margin: 6px 6px 10px;
+ padding: 6px 0 5px 5px;
+}
+.titlenews { /*newsicons*/
+ background: url("icons/typewriter.png") no-repeat scroll 0 0 transparent;
+ color: #333 !important;
+ font-weight: bold;
+ padding: 1px 4px 2px 22px;
+}
+.titleeventirec { /*eventicon*/
+ background: url("icons/events.png") no-repeat scroll 0 0 transparent;
+ color: #333 !important;
+ font-weight: bold;
+ padding: 1px 4px 2px 22px;
+}
+.titlegroups { /*projecticon*/
+ background: url("icons/mediaprod.png") no-repeat scroll 0 0 transparent;
+ color: #333 !important;
+ font-weight: bold;
+ padding: 1px 4px 2px 22px;
+}
+
+/*<!-- Unknown -->*/
+
+
+
+
+.rigamenumodificadx2:hover {
+ background: none repeat scroll 0 0 #FFF;
+ border-radius: 6px;
+ -webkit-border-radius: 6px;
+ -moz-border-radius: 6px;
+ box-shadow: 0 0 3px #000;
+ -webkit-box-shadow: 0 0 3px #000;
+ -moz-box-shadow: 0 0 3px #000;
+ margin: 2px 6px 10px;
+ padding: 6px 0 5px 5px;
+ text-align:center;
+ color :#8D8899;
+ font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

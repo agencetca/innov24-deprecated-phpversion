@@ -1,0 +1,19 @@
+<div class="member_alerts_wrapper">  
+	<h2><bx_text:_modzzz_alerts_content_type_header />:: __group__</h2>
+
+	<bx_repeat:entries> 
+
+		<div style="margin-bottom: 5px;"><a href='__item_url__'>__item_title__</a></div>  
+		
+		<bx_if:photo>
+			<div style="margin-bottom: 5px;"><img src='__item_image__' /></div>
+		</bx_if:photo>
+
+		<bx_if:description>
+			<div style="margin-bottom: 5px;">__item_desc__</div>
+		</bx_if:description>
+  
+		<div style="clear:both"></div>
+		<br>
+	</bx_repeat:entries>  
+</div>

@@ -1,0 +1,32 @@
+#aqb_df_wrapper {
+	margin: 10px;
+}
+.aqb_margined {
+	margin-bottom: 5px;
+}
+
+.aqb_menu_section {
+	border: 1px solid green;
+}
+.aqb_top_level_list,
+.aqb_df_list {
+	width: 92px;
+	height: 21px;
+	overflow:hidden;
+	padding:7px 5px 0 20px;
+	white-space:nowrap;
+}
+.aqb_top_level_list {
+	background: url(../images/top_item_bg.gif) no-repeat;
+}
+.aqb_df_list {
+	background: url(../images/custom_item_bg.gif) no-repeat;
+}
+.aqb_top_level_list a,
+.aqb_df_list a {
+	color:#6666CC;
+	display:block;
+	overflow:hidden;
+	text-decoration:none;
+	font-size: 11px;
+}

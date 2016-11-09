@@ -1,0 +1,94 @@
+#global
+{
+width:600px;
+height:72px;
+}
+.left
+{
+width:50%;
+height:auto;
+position:relative;
+float:left;
+}
+.right
+{
+width:49%;
+height:auto;
+position:relative;
+float:right;
+}
+.FimgJob
+{
+background: url("../Tooltip/icons/job.png") no-repeat scroll 0 0 transparent;
+height:16px;
+width:auto;
+padding-bottom:1px;
+}
+.Fimgtool1
+{
+height:16px;
+width:auto;
+padding-bottom:3px;
+}
+.FimgMale
+{
+background: url("../Tooltip/icons/male.png") no-repeat scroll 0 0 transparent;
+height:16px;
+width:auto;
+padding-bottom:1px;
+}
+.FimgFonction
+{
+background: url("../Tooltip/icons/fonction.png") no-repeat scroll 0 0 transparent;
+height:16px;
+width:auto;
+padding-bottom:1px;
+}
+.FimgCompany
+{
+background: url("../Tooltip/icons/globe.png") no-repeat scroll 0 0 transparent;
+height:16px;
+width:auto;
+padding-bottom:1px;
+}
+.FimgFemale
+{
+background: url("../Tooltip/icons/female.png") no-repeat scroll 0 0 transparent;
+height:16px;
+width:auto;
+padding-bottom:1px;
+}
+.FimgEmail
+{
+background: url("../Tooltip/icons/email.png") no-repeat scroll 0 0 transparent;
+height:16px;
+width:auto;
+padding-bottom:1px;
+}
+.FimgPhone
+{
+background: url("../Tooltip/icons/phone.png") no-repeat scroll 0 0 transparent;
+height:16px;
+width:auto;
+padding-bottom:1px;
+}
+.FimgMobile
+{
+background: url("../Tooltip/icons/mobile.png") no-repeat scroll 0 0 transparent;
+height:16px;
+width:auto;
+padding-bottom:3px;
+}
+.Fcontenu
+{
+padding-top:1px;
+padding-left:20px;
+}
+.FcontenuPays
+{
+padding-top:1px;
+}
+#country
+{
+padding-bottom:1px;
+}

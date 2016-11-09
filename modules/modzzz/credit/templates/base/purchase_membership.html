@@ -1,0 +1,59 @@
+<div class="membership_unit">
+	
+	<div class="membership_header_message"><bx_text:_modzzz_credit_your_present_credits /></div>
+	<div class="membership_item">
+		<span class='membership_credits_msg'><bx_text:_modzzz_credits />:</span> __my_credits__
+	</div>
+ 
+	<div class="membership_header_message"><bx_text:_modzzz_credit_your_present_membership /></div> 
+	<div class="membership_item">
+		<div class="membership_row" >
+			<img src="__icon__" />
+		</div>
+		<div class="membership_row">
+			<div class="membership_title">
+				<a href="javascript: void(0)" onclick="javascript: window.open('__explain_url__', '', 'width=500,height=300,menubar=no,status=no,resizable=yes,scrollbars=yes,toolbar=no,location=no');">__title__</a> (__days__)
+			</div>                
+			<div class="membership_desc">__description__</div> 
+		</div>
+		<div class="membership_row">  
+			<div class="button_wrapper" onclick="javascript: window.open('__explain_url__', '', 'width=500,height=300,menubar=no,status=no,resizable=yes,scrollbars=yes,toolbar=no,location=no');" > 
+				<img src="<bx_icon_url:membership_info.png />" class="button_icon" />
+				<input type="button" value="<bx_text:_Info />" class="form_input_submit" />
+				<div class="button_wrapper_close">&nbsp;</div>
+			</div> 
+		</div> 
+	</div>	
+	<div class="clear_both">&nbsp;</div> 
+
+
+	<div class="membership_header_message"><bx_text:_modzzz_credit_other_available_memberships /></div> 
+	<bx_repeat:items>
+        <div class="membership_item">
+            <div class="membership_row" >
+                <img src="__icon__" />
+            </div>
+            <div class="membership_row">
+             	<div class="membership_credits">__credits__ <bx_text:_modzzz_credits /></div>
+                <div class="membership_title">
+                    <a href="javascript: void(0)" onclick="javascript: window.open('__explain_url__', '', 'width=500,height=300,menubar=no,status=no,resizable=yes,scrollbars=yes,toolbar=no,location=no');">__title__</a> (__days__)
+                </div>                
+                <div class="membership_desc">__description__</div> 
+            </div>
+            <div class="membership_row">  
+				<div class="button_wrapper" onclick="javascript: window.open('__explain_url__', '', 'width=500,height=300,menubar=no,status=no,resizable=yes,scrollbars=yes,toolbar=no,location=no');" > 
+					<img src="<bx_icon_url:membership_info.png />" class="button_icon" />
+					<input type="button" value="<bx_text:_Info />" class="form_input_submit"  />
+					<div class="button_wrapper_close">&nbsp;</div>
+				</div>
+				<br>
+				<div class="button_wrapper">
+					<img src="<bx_icon_url:purchase_membership.png />" class="button_icon" />
+					<input type="button" value="<bx_text:_modzzz_credit_purchase_membership />" class="form_input_submit" onclick="window.location='__purchase_membership_url__';" />
+					<div class="button_wrapper_close">&nbsp;</div>
+				</div> 
+			</div> 
+        </div>
+    </bx_repeat:items>
+    <div class="clear_both">&nbsp;</div>
+</div>

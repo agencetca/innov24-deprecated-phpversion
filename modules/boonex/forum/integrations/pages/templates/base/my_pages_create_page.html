@@ -1,0 +1,56 @@
+<script type="text/javascript" language="javascript">
+	function toggleAll(id)
+	{
+		$(".categ_title").each(function(){
+		 	if ($(this).css("display") == 'block'){
+		 		$('#' + $(this).attr('id')).slideToggle('fast');
+		 	}
+		 });
+		$(".categ_image").each(function(){
+		 	if ($(this).css("display") == 'none'){
+		 		$('#' + $(this).attr('id')).slideToggle('fast');
+		 	}
+		 });		
+		$("#main_categ" + id).slideToggle('fast');
+		$("#sub_categ" + id).slideToggle('fast');
+		$("#main_category").val(id);
+	}
+</script>
+<div class="bx_sys_default_padding" style="display:__display_categ__">
+	<form method="post" id="category_form" name="category_form" action="__create_url__">
+		<input type="hidden" name="main_category" id="main_category"/>
+		<input type="hidden" name="sub_category" id="sub_category"/>
+		<div class="form_advanced_wrapper category_form_wrapper">
+			<bx_repeat:main_category>
+				<div class="categ_box">
+
+					<div id="main_categ__main_option_value__" class="categ_image" onclick="toggleAll(__main_option_value__)" onmouseout="this.style.backgroundColor=''" onmouseover="this.style.cursor='pointer';this.style.backgroundColor='#DDDDDD';">
+						<div style="text-align:center;">
+							<img src="__main_option_icon__">
+						</div>
+						<div class="categ_name">
+							__main_option_name__
+						</div>
+					</div>
+
+					<div id="sub_categ__main_option_value__" class="categ_title">
+						<div class="categ_sub_name">
+							__main_option_name__
+						</div>
+						<div class="categ_sub_name_options">
+							__categ_sub_name_options__
+						</div>
+						<div class="button_wrapper">
+                <input class="form_input_submit" type="submit" value="__button_select__" />
+                <div class="button_wrapper_close"></div>
+            </div>
+					</div>
+					
+				</div>	
+			</bx_repeat:main_category>
+		</div>
+	</form>
+</div>
+<div>
+	__form__
+</div>

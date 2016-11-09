@@ -1,0 +1,114 @@
+<!-- Warning! Do not change id's of areas and do not decrease number of areas if not sure! -->
+<div style="padding:15px;">
+	<form method="post" id="category_form" name="category_form" action="pages.php">
+		<div>
+			<span>
+				<select name="main_category" id="main_category" onChange="this.form.submit();">
+					<option value=0>__main_select__</option>
+					<bx_repeat:main_category>
+						<option __selected__ value="__main_option_value__">__main_option_name__</option>
+					</bx_repeat:main_category>
+				</select>
+			</span>
+			<span>
+				<select name="sub_category" id="sub_category" onChange="this.form.submit();">
+					<option value=0>__sub_select__</option>
+					<bx_repeat:sub_category>
+						<option __selected__ value="__sub_option_value__">__sub_option_name__</option>
+					</bx_repeat:sub_category>
+				</select>
+			</span>
+		</div>
+	</form>
+</div>
+<div id="edit_form_cont"></div>
+<div id="main_container">
+	<div id="tabs_container">
+		<div id="m1">
+			<div class="build_container"><bx_text:_adm_fields_loading /></div>
+		</div>
+		<div id="edit-tab" style="display:none">
+            <div class="" id="mode_switcher_1">
+    			<ul style="display:none">
+    				<li><a href="#m2"><bx_text:_adm_fields_owner /></a></li>
+    				<li><a href="#m3"><bx_text:_adm_fields_admin /></a></li>
+    			</ul>
+            </div>
+			<div id="m2">
+				<div class="build_container"></div>
+			</div>
+			<div id="m3">
+				<div class="build_container"></div>
+			</div>
+		</div>
+		<div id="view-tab" style="display:none">
+            <div class="" id="mode_switcher_2">
+    			<ul style="display:none">
+    				<li><a href="#m5"><bx_text:_adm_fields_admin /></a></li>
+    				<li><a href="#m6"><bx_text:_adm_fields_member /></a></li>
+    				<li><a href="#m8"><bx_text:_adm_fields_visitor /></a></li>
+    			</ul>
+            </div>
+			<div id="m5">
+				<div class="build_container"></div>
+			</div>
+			<div id="m6">
+				<div class="build_container"></div>
+			</div>			
+			<div id="m8">
+				<div class="build_container"></div>
+			</div>
+		</div>
+		<div id="browse-tab" style="display:none">
+            <div class="" id="mode_switcher_3">
+    			<ul style="display:none">
+    				<li><a href="#m9"><bx_text:_adm_fields_admin /></a></li>
+    			</ul>
+            </div>
+			<div id="m9">
+				<div class="build_container"></div>
+			</div>
+		</div>
+		<div id="search-tab" style="display:none">
+            <div class="" id="mode_switcher_4">
+    			<ul style="display:none">
+    				<li><a href="#m12"><bx_text:_adm_fields_simple_search /></a></li>
+    				<li><a href="#m13"><bx_text:_adm_fields_quick_search /></a></li>
+    				<li><a href="#m14"><bx_text:_adm_fields_advanced_search /></a></li>
+    			</ul>
+            </div>
+			<div id="m12">
+				<div class="build_container"></div>
+			</div>
+			<div id="m13">
+				<div class="build_container"></div>
+			</div>
+			<div id="m14">
+				<div class="build_container"></div>
+			</div>
+		</div>		
+	</div>
+</div>
+<script language="javascript" type="text/javascript">
+<!--
+    oPFM = new BxDolPFM();	
+	oPFM.config.areas  = 9;
+	oPFM.config.parserUrl = 'pages.parse.php?main_category=__main_category__&sub_category=__sub_category__';
+	$(document).ready(function() {
+		$('#mode_switcher_1').tabs();
+		$('#mode_switcher_2').tabs();
+		$('#mode_switcher_3').tabs();
+		oPFM.init();
+	});
+	
+	function changeType(oLink){
+	    var sType = oLink.id.replace('adm-fb-ctl-', '');
+
+	    $(oLink).parent('.notActive').hide().siblings('.notActive:hidden').show().siblings('.active').hide().siblings('#' + $(oLink).attr('id') + '-act').show();
+
+	    $('#tabs_container > :visible').bx_anim('hide', 'fade', 'slow', function() {
+            $('#tabs_container > #' + sType).show();
+	    }); 
+	}
+-->
+</script>

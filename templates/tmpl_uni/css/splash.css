@@ -1,0 +1,424 @@
+*
+{
+font-family: arial;
+font-size: 12px;
+}
+.VeryBigBody
+{
+width: auto;
+/* background-color: purple; */
+}
+
+/* --------------------------------Header-------------------------------- */
+
+.body1
+{
+position: absolute;
+top:0px;
+right:0px;
+left: 0px;
+width: auto;
+height: 130px;
+background-color: #F2F2F2;
+}
+.header_box
+{
+position: relative;
+margin-left: auto;
+margin-right: auto;
+width: 2000px;
+}
+.logo
+{
+float:left;
+margin: 20px 20px 20px 20px;
+}
+.login_box
+{
+float:right;
+margin-top: 15px;
+margin-right: 15px;
+}
+.login_form
+{
+/* border: 1px solid #9F9E9E; */
+position: absolute;
+top:50px;
+bottom: 800px;
+right:0px;
+left: 720px;
+float: left;
+margin-right: 5px;
+}
+.login_txt
+{
+font-size: 12px;
+font-family: arial;
+color: #000;
+}
+.login_field_border
+{
+/* border: 3px solid #000; */
+}
+.login_field
+{
+width: 170px;
+}
+.pass_form
+{
+position: absolute;
+top:50px;
+bottom: 800px;
+right:0px;
+left: 905px;
+/* border: 1px solid #9F9E9E; */
+margin-left: 5px;
+}
+.pass_txt
+{
+font-size: 12px;
+font-family: arial;
+color: #000;
+}
+.pass_field_border
+{
+/* border: 3px solid #000; */
+}
+.pass_field
+{
+width: 170px;
+}
+.remember_me
+{
+float: left;
+}
+.login_button
+{
+position: absolute;
+top:60px;
+bottom: 800px;
+right:10px;
+left: 1100px;
+background-image:url('../images/splash/login_button.png');
+background-repeat:no-repeat;
+width:114px;
+height:26px;
+color:#fff;
+text-align:center;
+padding-top:4px;
+font-weight:bold;
+font-size:12px;
+}
+.login_button_Trans
+{
+position: absolute;
+top:60px;
+bottom: 800px;
+right:10px;
+left: 1100px;
+}
+.forgot
+{
+margin-top: 10px;
+}
+
+/* --------------------------------Partie Centrale-------------------------------- */
+
+.BigBody
+{
+position: relative;
+margin-left: auto;
+margin-right: auto;
+padding-right:5px;
+width: 1220px;
+/* background-color: grey; */
+}
+.body2 /* -------------------------TV */
+{
+position: absolute;
+top:130px;
+left:10px;
+width: 600px;
+height: 350px;
+/* background-color: red; */
+float:left;
+margin-left: 14px;
+margin-top: 5px;
+}
+.video_tv
+{
+position:relative;
+width:519px;
+height:300px;
+margin: 20px 35px 25px 40px;
+border: 1px solid #9F9E9E;
+border-radius: 5px 5px 5px 5px;
+}
+.body3 /* -------------------------Images */
+{
+position: absolute;
+top:130px;
+bottom: 100px;
+right:20px;
+left: 652px;
+width: 576px;
+height: 190px;
+/* background-color: orange; */
+float:right;
+margin-right: 38px;
+padding-right: 10px;
+margin-top: 26px;
+margin-bottom: 10px;
+}
+.img_carroussel
+{
+display:inline-block;
+}
+.body4 /* -------------------------Registration form */
+{
+position: absolute;
+top:380px;
+bottom: 100px;
+right:20px;
+left: 652px;
+width: 570px;
+height: 265px;
+/* background-color: blue; */
+margin-right: 50px;
+margin-top: 0;
+padding-bottom: 30px;
+/* border: 1px solid #000; */
+}
+.join_box
+{
+width: 295px;
+float:left;
+margin: 40px 40px 40px 10px;
+}
+.joinTXTdiv
+{
+float:left;
+display: block;
+width: 75px;
+height: auto;
+}
+.joinNOWtxt
+{
+text-transform: uppercase;
+font-size: 28px;
+font-weight: bold;
+margin-bottom: 15px;
+margin-left: 10px;
+}
+.joinFORMSdiv
+{
+float:left;
+display: block;
+width: 130px;
+height: auto;
+}
+.joinfield
+{
+float:left;
+margin: 5px 10px 5px 10px;
+width: 132px;
+}
+.fieldArea
+{
+width: 132px;
+}
+.joinPICSdiv
+{
+float:left;
+display: block;
+width: 20px;
+height: auto;
+padding-top: 5px;
+margin-left: 10px;
+}
+.infoPic
+{
+float:left;
+margin: 0 0 17px 10px;
+}
+.joinform
+{
+/* border: 3px solid #000; */
+display: inline-block;
+}
+.jointxt
+{
+margin-right: 10px;
+margin-bottom: 10px;
+margin-left: 10px;
+}
+.jointxtProfile
+{
+margin-top: 10px;
+line-height: 85%;
+}
+.jointxtNick
+{
+margin-top: 18px;
+}
+.jointxtPass
+{
+margin-top: 18px;
+}
+.jointxtConfrm
+{
+margin-top: 17px;
+line-height: 85%;
+}
+.jointxtEmail
+{
+margin-top: 14px;
+}
+.button_joinform
+{
+position: absolute;
+bottom: -19px;
+right: 340px;
+background-image:url('../images/splash/join_button.png');
+background-repeat:no-repeat;
+width:133px;
+height:31px;
+color:#fff;
+text-align:center;
+vertical-align:middle;
+padding-top:6px;
+font-weight:bold;
+font-size:12px;
+}
+.button_joinform_Trans
+{
+position: absolute;
+bottom: 7px;
+right: 0;
+width:133px;
+height:31px;
+}
+.join_desc_box
+{
+width: 240px;
+height: 220px;
+background-color: #F1F1F1;
+margin: 44px 5px 5px 285px;
+padding: 40px 40px 5px 5px;
+}
+.titlejoin_desc
+{
+font-size: 18px;
+font-weight: bold;
+}
+.join_desc
+{
+ width: 260px;
+}
+.body5 /* -------------------------Comments */
+{
+top:500px;
+left:20px;
+position: absolute;
+width: 420px;
+height: 160px;
+background-color: F2F2F2;
+float:left;
+margin-top: 5px;
+margin-left: 48px;
+/* border: 1px solid grey; */
+padding-top: 20px;
+padding-left: 100px;
+overflow: hidden;
+white-space:nowrap;
+}
+.blockTitle_borderTitle
+{
+background-color: grey;
+}
+/* 
+.blockTitle_txt
+{
+color:#4c4c4c;
+text-transform: uppercase;
+font-size: 16px;
+font-weight: bold;
+margin-left: 4px;
+margin-bottom: 0;
+}
+ */
+.blockTitle
+{
+font-size:20px;
+color:#4c4c4c;
+font-weight:bold;
+/* text-align: center; */
+}
+.listLastNews
+{
+list-style-type: none;
+}
+
+/* --------------------------------Footer-------------------------------- */
+
+.body6
+{
+position: absolute;
+top:720px;
+bottom: 0px;
+right:0px;
+left: 0px;
+height: 40px;
+width: auto;
+margin: 0 0 0 0;
+background-color: #F2F2F2;
+}
+.footer_box
+{
+position: relative;
+margin-left: auto;
+margin-right: auto;
+width: 1220px;
+}
+.bottomLinks a
+{
+float:left;
+color: grey;
+margin-top: 15px;
+margin-left: 15px;
+}
+.bottomLinksItem a
+{
+margin-right: 12px;
+}
+.copyright
+{
+float:right;
+color: grey;
+font-weight: bold;
+margin-top: 15px;
+margin-right: 0;
+}
+
+/* Space Fitters */
+
+.body7
+{
+position: absolute;
+top:760px;
+bottom: 0px;
+right:0px;
+left: 0px;
+height: auto;
+width: auto;
+background-color: #F2F2F2;
+}
+
+.fitVeryBigBody
+{
+position: absolute;
+top:0px;
+left: 1220px;
+width: auto;
+background-color: #F2F2F2;
+}

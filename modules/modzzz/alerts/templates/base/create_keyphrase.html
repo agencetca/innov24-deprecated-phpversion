@@ -1,0 +1,42 @@
+<script>
+function setTitleText(sText){
+	if(document.getElementById('etext').value == "")
+		document.getElementById('etext').value = sText; 
+}
+
+function emptyTitleText(sText){
+	if(document.getElementById('etext').value == sText)
+		document.getElementById('etext').value = ""; 
+}
+</script>
+
+<form name='createfrm' method=post action='__create_url__'>
+<div class="modzzz_alerts_default_padding"> 
+	
+	<div class="alertUnit">  
+		<bx_text:_modzzz_alerts_keyphrase_add_message />
+	</div>
+
+ 	<div class="alertUnit">  
+		 __manage_link__
+	</div>
+
+	<div class="alertUnit">   
+		  <textarea id="etext" name="title" rows=1 cols=60 onblur="setTitleText('<bx_text:_modzzz_alerts_enter_your_keyphrase />')" onfocus="emptyTitleText('<bx_text:_modzzz_alerts_enter_your_keyphrase />')"><bx_text:_modzzz_alerts_enter_your_keyphrase /></textarea>
+  
+		<div class='actionsContainer'>
+			<div class='actionsBlock'>
+				<div class="button_wrapper" style="width: 150px; margin: 0pt;" onclick="document.createfrm.submit()">
+					<div class="button_wrapper_close"></div>
+					<div class="button_input_wrapper">
+						<button type="button" class="form_input_submit"> 
+							&nbsp;&nbsp;<bx_text:_modzzz_alerts_continue />
+						</button> 
+					</div>
+				</div> 
+			</div>
+		</div> 
+	</div> 
+	<div class="clear_both"></div>
+  </div>	
+  </form>

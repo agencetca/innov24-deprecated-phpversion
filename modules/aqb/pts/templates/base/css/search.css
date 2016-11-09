@@ -1,0 +1,12 @@
+.aqb_pts_profile_info_block td {
+	border-bottom: 1px solid #ccc;
+	padding: 4px;
+}
+.aqb_pts_profile_info_block td.profile_info_label {
+	font-weight: bold;
+	text-align: right;
+	width: 160px;
+}
+.aqb_pts_profile_info_block td.profile_info_value1 {
+	border-right: 1px solid #ccc;
+}

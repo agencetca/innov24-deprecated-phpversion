@@ -1,0 +1,33 @@
+ <style>
+  div.fan_box {
+    width: __width__px;
+    height: __height__px;
+    border:1px solid #__border_color__;
+    background-color:#__background_color__;
+    float:left;
+    padding:3px;
+  }
+	.sys_box_header
+	{
+		padding:5px;
+		font-size:12px;
+		text-align:left;
+		font-weight:bold;
+		background-color:#__border_color__;
+		font-family:arial;
+	}
+  </style>
+<link href="__url__modules/modloaded/pages/templates/base/css/unit.css" rel="stylesheet" type="text/css" />
+
+<div class="fan_box">
+	<div class="sys_box_header">__find_us_on__ __site_title__</div>
+	<div class="sys_box_title">__total_fans__ __people_is_fan_of__ <a class="sys_box_title" href="__page_url__" target="_blank">__page_title__</a>.</div>
+	<div id="__prefix__images_icons" class="bx_sys_block_images_icons">
+     <bx_repeat:images_icons>
+         <div class="sys_fans_icon">
+         	<div><a href="__url____title__" target="_blank"><img alt="__image_url__" title="__title__" src="__icon_url__" /></a></div>
+         	<div class="sys_fans_title"><a class="sys_fans_title"  href="__url____title__" target="_blank">__nick__</a></div>
+         </div>
+     </bx_repeat:images_icons>
+	</div>
+</div>

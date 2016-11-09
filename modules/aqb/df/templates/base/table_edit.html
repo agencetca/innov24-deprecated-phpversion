@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+	<head>
+		<title>__page_header__</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script defer type="text/javascript">
+			var site_url = '<bx_url_root />';
+			var aUserInfoTimers = new Array();
+		</script>
+		<script type="text/javascript" src="<bx_url_root />plugins/jquery/jquery.js"></script>
+		<script type="text/javascript" src="<bx_url_root />inc/js/functions.js"></script>
+
+		<script type="text/javascript">
+			function addRow( eImg ) {
+				$( eImg ).parent().parent().before(
+					'<tr>' +
+						'<td><input type="text" class="value_input" name="PreList[' + iNextInd + '][Value]" value="" /></td>' +
+						'<td><input type="text" class="value_input" name="PreList[' + iNextInd + '][LKey]" value="" /></td>' +
+						'<th>' +
+							'<img src="__delete_icon__"     class="row_control" title="Delete" alt="Delete" onclick="delRow( this );" />' +
+							'<img src="__up_icon__"   class="row_control" title="Move up"   alt="Move up" onclick="moveUpRow( this );" />' +
+							'<img src="__down_icon__" class="row_control" title="Move down" alt="Move down" onclick="moveDownRow( this );" />' +
+						'</th>' +
+					'</tr>'
+				);
+
+				iNextInd ++;
+
+				sortZebra();
+			}
+
+			function delRow( eImg ) {
+				$( eImg ).parent().parent().remove();
+				sortZebra();
+			}
+			function moveUpRow( eImg ) {
+				var oCur = $( eImg ).parent().parent();
+				var oPrev = oCur.prev( ':not(.headers)' );
+				if( !oPrev.length )
+					return;
+
+				// swap elements values
+				var oCurElems  = $('input', oCur.get(0));
+				var oPrevElems = $('input', oPrev.get(0));
+
+				oCurElems.each( function(iInd) {
+					var oCurElem  = $( this );
+					var oPrevElem = oPrevElems.filter( ':eq(' + iInd + ')' );
+
+					// swap them
+					var sCurValue = oCurElem.val();
+					oCurElem.val( oPrevElem.val() );
+					oPrevElem.val( sCurValue );
+				} );
+			}
+			function moveDownRow( eImg ) {
+				var oCur = $( eImg ).parent().parent();
+				var oPrev = oCur.next( ':not(.headers)' );
+				if( !oPrev.length )
+					return;
+
+				// swap elements values
+				var oCurElems  = $('input', oCur.get(0));
+				var oPrevElems = $('input', oPrev.get(0));
+
+				oCurElems.each( function(iInd) {
+					var oCurElem  = $( this );
+					var oPrevElem = oPrevElems.filter( ':eq(' + iInd + ')' );
+
+					// swap them
+					var sCurValue = oCurElem.val();
+					oCurElem.val( oPrevElem.val() );
+					oPrevElem.val( sCurValue );
+				} );
+			}
+			function sortZebra() {
+				$( '#listEdit tr:even' ).removeClass( 'even odd' ).addClass( 'even' );
+				$( '#listEdit tr:odd'  ).removeClass( 'even odd' ).addClass( 'odd'  );
+			}
+			//just a design
+			$( document ).ready( sortZebra );
+		</script>
+
+		<link href="__admin_url__templates/base/css/predefined_values.css" rel="stylesheet" type="text/css" />
+		<link href="__admin_url__templates/base/css/general.css" rel="stylesheet" type="text/css" />
+		<style>
+		#listEdit td .value_input {
+			width:98%;
+		}
+		</style>
+    </head>
+    <body onbeforeunload="window.opener.AqbDFRefresh('__home_url__'); ">
+        <div id="FloatDesc"></div>
+        __message__
+        __page_main_code__
+    </body>
+</html>

@@ -1,0 +1,89 @@
+<style type="text/css">
+.fchat_actions {
+    padding: 10px;
+    position: absolute;
+    right: 15px;
+    top: 35px;
+    width: 250px;
+    z-index:10;
+    background-color: #EEEEEE;
+
+    -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    -o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+
+    -webkit-border-bottom-right-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius: 0 0 10px 10px;
+    -o-border-radius: 0 0 10px 10px;
+    border-radius: 0 0 10px 10px;
+}
+.container {
+    background-color: #F2F4F8;
+    overflow: hidden;
+    padding: 5px 10px;
+    position: relative;
+}
+.chat_submit_form div{
+    line-height: 27px;
+}
+.chat_submit_form div span{
+    margin: 0 5px;
+}
+</style>
+
+<script>
+    var iRoom = "__room__";
+    var dqds=3;
+</script>
+
+__new_room__
+
+<div class="container">
+    <div class="chat_messages"></div>
+
+    <bx_if:can_type>
+    <form class="chat_submit_form">
+        <div style="line-height: 27px;">
+            <input type="text" name="message" /><input type="submit" value="<bx_text:_fch_msg_send />" name="Submit" />
+            <bx_if:nego_bool>
+                __nego_html__
+            </bx_if:nego_bool>
+        </div>
+        <div>
+            <h3 class="error"><bx_text:_fch_msg_error /></h3>
+            <h3 class="success"><bx_text:_fch_msg_succ /></h3>
+            <h3 class="protect"><bx_text:_fch_msg_wait /></h3>
+        </div>
+        <input type="hidden" name="room" value="__room__" />
+    </form>
+    </bx_if:can_type>
+</div>
+<script>
+$(function() {
+    getLastPrice = function() {
+        $.getJSON('m/fchat/action/get_last_price/&room='+iRoom, function(data) {
+            if (data.res) {
+                $('#chat_last_price').html(data.res);
+            }
+            setTimeout(function() {
+               getLastPrice();
+            }, 5000);
+        });
+    }
+    getLastPrice();
+    getMessages = function() {
+        $.getJSON('m/fchat/action/get_last_messages/&room='+iRoom+'&u='+Math.random(), function(data) {
+            if (data.messages) {
+                $('.chat_messages').html(data.messages);
+            }
+            setTimeout(function() {
+               getMessages();
+            }, 5000);
+        });
+    }
+    getMessages();
+});
+</script>
+

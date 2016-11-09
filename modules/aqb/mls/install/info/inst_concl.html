@@ -1,0 +1,27 @@
+<style>
+	.file {
+		font-weight: bold;
+		font-size: 8pt;
+		color: red;
+	}
+</style>
+In the file <span class="file">modules/boonex/membership/classes/BxMbpDb.php</span> find the line
+
+<div class="code">$sWhereClause = " AND `tl`.`Active`='yes' AND `tl`.`Purchasable`='yes'";</div>
+
+insert below it the code
+
+<div class="code">//--- AQB Membership Levels Splitter ---//
+if (BxDolRequest::serviceExists('aqb_mls', 'profile_types_filter')) {
+	BxDolService::call('aqb_mls', 'profile_types_filter', array(&$sJoinClause, &$sWhereClause));
+}
+//--- AQB Membership Levels Splitter ---//</div>
+
+Installation finished.
+If you need some help feel free to <a href="mailto:support@aqbsoft.com">contact us</a>.
+
+<script language="javascript">
+$(document).ready(function(){
+	$('.modules-plank-switch').toggleClass('modules-plank-switch-opened').next().toggle()
+});
+</script>

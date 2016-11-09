@@ -1,0 +1,187 @@
+<style>
+	.file {
+		font-weight: bold;
+		font-size: 8pt;
+		color: red;
+	}
+	.code {
+		font-weight: bold;
+		font-size: 8pt;
+		color: red;
+	}
+</style>
+1. Edit the file <span class="file">inc/classes/BxDolMemberMenu.php</span>
+	For Dolphin 7.0.2 and lower:
+	find the line
+
+	<span class="code">// generate the menu's structure ;</span>
+
+	insert above it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	if (BxDolRequest::serviceExists('aqb_pts', 'menu_items_filter')) {
+		BxDolService::call('aqb_pts', 'menu_items_filter', array('member', &$aMenuStructure[$sPosition]));
+	}
+	//--- AQB Profile Types Splitter ---//</span>
+
+	For Dolphin 7.0.3 and higher:
+	find the line
+
+	<span class="code">//define bubble list</span>
+
+	insert above it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	if (BxDolRequest::serviceExists('aqb_pts', 'menu_items_filter')) {
+		BxDolService::call('aqb_pts', 'menu_items_filter', array('member', &$aDefinedMenuItems['top']));
+		BxDolService::call('aqb_pts', 'menu_items_filter', array('member', &$aDefinedMenuItems['top_extra']));
+	}
+	//--- AQB Profile Types Splitter ---//</span>
+
+2. Edit the file <span class="file">inc/classes/BxDolMenu.php</span>
+	find the code
+
+	<span class="code">if( !$this->aTopMenu or !is_array( $this->aTopMenu ) ) {
+		echo '<b>Warning!</b> Cannot evaluate Menu Cache.';
+		return false;
+	}</span>
+
+	insert below it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	if (BxDolRequest::serviceExists('aqb_pts', 'menu_items_filter')) {
+		BxDolService::call('aqb_pts', 'menu_items_filter', array('top', &$this->aTopMenu));
+	}
+	//--- AQB Profile Types Splitter ---//</span>
+
+3. Edit the file <span class="file">inc/classes/BxDolPageView.php</span>
+	find the line
+
+	<span class="code">$this -> aPage = $aCache[ $this->sPageName ];</span>
+
+	insert below it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	if (BxDolRequest::serviceExists('aqb_pts', 'page_blocks_filter')) {
+		BxDolService::call('aqb_pts', 'page_blocks_filter', array(&$this));
+	}
+	//--- AQB Profile Types Splitter ---//</span>
+
+4. Edit the file <span class="file">inc/classes/BxDolProfileFields.php</span>
+	a) if you have Dolphin 7.0.0 or Dolphin 7.0.1 find the code
+
+	<span class="code">$oForm = new BxTemplFormView($aForm);
+	return $oForm->getCode();</span>
+
+	if you have Dolphin 7.0.2 or higher find the code
+
+	<span class="code">$oForm = new BxTemplFormView($aForm);
+	bx_import('BxDolAlerts');</span>
+
+	insert above it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	if (BxDolRequest::serviceExists('aqb_pts', 'add_field_change_handler')) {
+		BxDolService::call('aqb_pts', 'add_field_change_handler', array($this->iAreaID, &$aForm));
+	}
+	//--- AQB Profile Types Splitter ---//</span>
+
+	b) find the line
+
+	<span class="code">return $this->getFormsSearch($aParams);</span>
+
+	replace it with the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	if (BxDolRequest::serviceExists('aqb_pts', 'get_search_forms')) {
+		return BxDolService::call('aqb_pts', 'get_search_forms', array(&$aParams, &$this));
+	} else return $this->getFormsSearch($aParams);
+	//--- AQB Profile Types Splitter ---//</span>
+
+	c) find the line
+
+	<span class="code">// generate block input</span>
+
+	insert above it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	$aInputs[] = array('type'  => 'hidden', 'name'  => 'ProfileType','value' => $aDefaultParams['ProfileType']);
+	//--- AQB Profile Types Splitter ---//</span>
+
+5. Edit the file <span class="file">templates/base/scripts/BxBaseProfileView.php</span>
+	a) find the line
+
+	<span class="code">$this->aPFBlocks = $this->oPF->aBlocks;</span>
+
+	insert above it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	if (BxDolRequest::serviceExists('aqb_pts', 'profile_view_filter')) {
+		BxDolService::call('aqb_pts', 'profile_view_filter', array($this->_iProfileID, &$this -> oPF ->aBlocks, &$this->oPF->aArea));
+	}
+	//--- AQB Profile Types Splitter ---//</span>
+
+	b) find the line
+
+	<span class="code">// --- cut 1</span>
+
+	insert above it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	$iPType = intval($_REQUEST['ProfileType']);
+	if ($iPType && BxDolRequest::serviceExists('aqb_pts', 'filter_fields')) {
+		$aWhere[] = "`Profiles`.`ProfileType` & {$iPType}";
+		BxDolService::call('aqb_pts', 'filter_fields', array(&$aSearchBlocks, $iPType));
+	}
+	//--- AQB Profile Types Splitter ---//</span>
+
+6. Edit the file <span class="file">templates/base/scripts/BxBaseSearchProfile.php</span>
+	find the line
+
+	<span class="code">global $aPreValues;</span>
+
+	insert below it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	if ($sTemplateName == 'search_profiles_ext.html' && $oCustomTemplate == null && BxDolRequest::serviceExists('aqb_pts', 'get_custom_template')) {
+		if ($aExtendedKey == null) $aExtendedKey = array();
+		$oCustomTemplate = BxDolService::call('aqb_pts', 'get_custom_template');
+		BxDolService::call('aqb_pts', 'get_search_layout', array($aProfileInfo, &$aExtendedKey));
+		$aProfileInfo['Headline'] = '';
+	}
+	//--- AQB Profile Types Splitter ---//</span>
+
+7. For Dolphin 7.0.0 edit the file <span class="file">join.php</span>
+   For Dolphin 7.0.1 and higher edit the file <span class="file">inc/classes/BxDolJoinProcessor.php</span>
+	find the line
+
+	<span class="code">$this -> oPF = new BxDolProfileFields(1);</span>
+
+	insert below it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	if (BxDolRequest::serviceExists('aqb_pts', 'join_form_filter')) {
+		BxDolService::call('aqb_pts', 'join_form_filter', array(&$this->oPF->aBlocks, &$this->oPF->aArea));
+	}
+	//--- AQB Profile Types Splitter ---//</span>
+
+8. Edit the file <span class="file">pedit.php</span>
+	find the line
+
+	<span class="code">$this -> aCoupleMutualFields = $this -> oPF -> getCoupleMutualFields();</span>
+
+	insert below it the code
+
+	<span class="code">//--- AQB Profile Types Splitter ---//
+	if (BxDolRequest::serviceExists('aqb_pts', 'pedit_form_filter')) {
+		BxDolService::call('aqb_pts', 'pedit_form_filter', array($this -> iProfileID, &$this -> oPF ->aBlocks, &$this->oPF->aArea));
+	}
+	//--- AQB Profile Types Splitter ---//</span>
+
+Installation finished.
+If you need some help feel free to <a href="mailto:support@aqbsoft.com">contact us</a>.
+<script language="javascript">
+$(document).ready(function(){
+	$('.modules-plank-switch').toggleClass('modules-plank-switch-opened').next().toggle()
+});
+</script>

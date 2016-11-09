@@ -1,0 +1,137 @@
+<style>
+	.file {
+		font-weight: bold;
+		font-size: 8pt;
+		color: red;
+	}
+</style>
+1. Edit the the file <span class="file">inc/classes/BxDolPFM.php</span>
+	a) find the line
+
+	<div class="code">&lt;li&gt;&lt;a href="#f4"&gt;&lt;?= $sMatchingC ?&gt;&lt;/a&gt;&lt;/li&gt;</div>
+
+	insert below it the code
+
+	<div class="code">&lt;li&gt;&lt;a href="#f5"&gt;&lt;?= _t('_aqb_df_dependencies') ?&gt;&lt;/a&gt;&lt;/li&gt;</div>
+
+	b) find the line
+
+	<div class="code">$this -> genFormMatchTab( $aField );</div>
+
+	insert below it the code
+
+	<div class="code">//--- AQB Dependent Fields ---//
+if (BxDolRequest::serviceExists('aqb_df', 'dep_tab')) {
+	BxDolService::call('aqb_df', 'dep_tab', array($this, $aField, $iItemID));
+}
+//--- AQB Dependent Fields ---//</div>
+
+	c) find the line
+
+	<div class="code">if( $sValues === '' ) {</div>
+
+	insert above it the code
+
+	<div class="code">//--- AQB Dependent Fields ---//
+if (BxDolRequest::serviceExists('aqb_df', 'dep_tab_check')) {
+	list($sValues, $bHaveErrors) = BxDolService::call('aqb_df', 'dep_tab_check', array($this, $aData, $sValues));
+}
+//--- AQB Dependent Fields ---//</div>
+
+	d) find the line
+
+	<div class="code">if( !empty( $aUpdate ) and !$bHaveErrors ) {</div>
+
+	insert above it the code
+
+	<div class="code">//--- AQB Dependent Fields ---//
+if (BxDolRequest::serviceExists('aqb_df', 'dep_tab_update')) {
+	if (!$bHaveErrors) BxDolService::call('aqb_df', 'dep_tab_update', array($aItem['ID'], $aData));
+}
+//--- AQB Dependent Fields ---//</div>
+
+	e) find the line
+
+	<div class="code">$this -> genSaveItemFormUpdate( 'deleteItem', $iItemID );</div>
+
+	insert below it the code
+
+	<div class="code">//--- AQB Dependent Fields ---//
+if (BxDolRequest::serviceExists('aqb_df', 'dep_tab_delete')) {
+	BxDolService::call('aqb_df', 'dep_tab_delete', array($iItemID));
+}
+//--- AQB Dependent Fields ---//</div>
+
+2. Edit the the file <span class="file">inc/classes/BxDolProfileFields.php</span>
+
+	a)
+	<b>If you have Dolphin 7.0.0 or Dolphin 7.0.1:</b>
+	find the code
+
+	<div class="code">$oForm = new BxTemplFormView($aForm);
+return $oForm->getCode();</div>
+
+	replace it with the code
+
+	<div class="code">//--- AQB Dependent Fields ---//
+if (BxDolRequest::serviceExists('aqb_df', 'set_dependencies')) {
+	$sDFCache = BxDolService::call('aqb_df', 'set_dependencies', array(&$aForm['inputs']));
+}
+$oForm = new BxTemplFormView($aForm);
+return $sDFCache.$oForm->getCode();
+//--- AQB Dependent Fields ---//</div>
+
+	<b>If you have Dolphin 7.0.2 or higher:</b>
+	find the code
+
+	<div class="code">$oForm = new BxTemplFormView($aForm);
+bx_import('BxDolAlerts');</div>
+
+	insert above it the code
+
+	<div class="code">//--- AQB Dependent Fields ---//
+if (BxDolRequest::serviceExists('aqb_df', 'set_dependencies')) {
+	$sDFCache = BxDolService::call('aqb_df', 'set_dependencies', array(&$aForm['inputs']));
+}
+//--- AQB Dependent Fields ---//</div>
+
+	then find the line
+
+	<div class="code">return $sCustomHtmlBefore . $oForm->getCode() . $sCustomHtmlAfter;</div>
+
+	replace it with the line
+
+	<div class="code">return $sDFCache . $sCustomHtmlBefore . $oForm->getCode() . $sCustomHtmlAfter;</div>
+
+    b) find the code
+
+	<div class="code">$oForm = new BxTemplFormView($aForm);
+$sResult .= $oForm->getCode();</div>
+
+	insert above it the code
+
+	<div class="code">//--- AQB Dependent Fields ---//
+if (BxDolRequest::serviceExists('aqb_df', 'set_dependencies_on_search')) {
+	BxDolService::call('aqb_df', 'set_dependencies_on_search', array(&$aForm['inputs']));
+}
+//--- AQB Dependent Fields ---//</div>
+
+	c) find the line
+
+	<div class="code">return $sResult;</div>
+
+	insert above it the code
+
+	<div class="code">//--- AQB Dependent Fields ---//
+if (BxDolRequest::serviceExists('aqb_df', 'get_cache_scripts')) {
+	return BxDolService::call('aqb_df', 'get_cache_scripts').$sResult;
+}
+//--- AQB Dependent Fields ---//</div>
+
+Installation finished.
+If you need some help feel free to <a href="mailto:support@aqbsoft.com">contact us</a>.
+<script language="javascript">
+$(document).ready(function(){
+	$('.modules-plank-switch').toggleClass('modules-plank-switch-opened').next().toggle()
+});
+</script>

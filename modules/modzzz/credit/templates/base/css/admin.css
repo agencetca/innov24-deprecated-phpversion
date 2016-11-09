@@ -1,0 +1,24 @@
+#modzzz_credit_admin_listing .block_cont {
+    padding:1px;
+}
+
+table.modzzz_credit_actions {
+    border-collapse:collapse;
+    margin:5px;
+    width:100%;
+}
+
+table.modzzz_credit_actions td {
+    width:33%;
+    text-align:center;
+}
+
+.modzzz_credit_manage_wrapper {
+    padding:0;
+}
+
+.input_wrapper_custom {
+    float: none; 
+	width:100%;
+	margin-top:3px;
+}

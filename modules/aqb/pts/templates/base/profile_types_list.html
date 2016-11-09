@@ -1,0 +1,26 @@
+<bx_if:profile_types_exist>
+	<center>
+		<table cellpadding="5" class="profile_types_table">
+		    <tr class="header_row">
+		        <td><bx_text:_aqb_pts_type_id /></td><td><bx_text:_aqb_pts_type_name /></td><td><bx_text:_aqb_pts_type_members /></td><td><bx_text:_aqb_pts_hp_block /></td><td>&nbsp;</td><td>&nbsp;</td>
+		    </tr>
+			<bx_repeat:profile_types>
+		    	<tr __obsolete_row__>
+	        		<td align="right">__ptype_id__</td>
+	        		<td>__ptype_name__</td>
+	        		<td align="right">__ptype_members__</td>
+	        		<td><center><input type="button" name="hptoggle" value="__action_hp_caption__" onclick="javascript: oAqbPTSMain.toggleHPStatus(__ptype_id__);"/></center></td>
+	        		<td><center><input type="button" name="__action_name__" value="__action_caption__" onclick="javascript: oAqbPTSMain.toggleTypeStatus(__ptype_id__);"/></center></td>
+	        		<td><center><input type="button" name="delete" value="<bx_text:_Delete />" onclick="javascript: oAqbPTSMain.deleteType(__ptype_id__);" __disabled_delete__/></center></td>
+				</tr>
+        	</bx_repeat:profile_types>
+		</table>
+	</center>
+</bx_if:profile_types_exist>
+<bx_if:profile_types_not_exist>
+	<center>
+		<div style="margin:10px;">
+			<bx_text:_aqb_pts_no_profile_types />
+		</div>
+	</center>
+</bx_if:profile_types_not_exist>

@@ -1,0 +1,41 @@
+<div class="bx_sys_default_padding">
+	<form method="post" id="category_form" name="category_form" action="__edit_url__?page_id=__page_id__">
+		<div class="form_advanced_wrapper category_form_wrapper">
+			<table  class="form_advanced_table" cellpadding="0" cellspacing="0">
+				<thead class="">
+					<tr  class="headers">
+						<th class="block_header" colspan="2">
+							__categories__
+						</th>
+					</tr>
+				</thead>
+				<tbody > 
+					<tr >
+		        <td class="caption">
+		            __select_categories__:
+		        </td>
+						<td class="value">
+							<span>
+								<select name="main_category" id="main_category" onChange="this.form.submit();">
+									<option value="">__main_select__</option>
+									<bx_repeat:main_category>
+										<option __selected__ value="__main_option_value__">__main_option_name__</option>
+									</bx_repeat:main_category>
+								</select>
+							</span>
+							<span>
+								<select name="sub_category" id="sub_category" onChange="this.form.submit();">
+									<option value="">__sub_select__</option>
+									<bx_repeat:sub_category>
+										<option __selected__ value="__sub_option_value__">__sub_option_name__</option>
+									</bx_repeat:sub_category>
+								</select>
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</form>
+        __form__
+</div>

@@ -1,0 +1,21 @@
+iframe#adm-mp-stats-iframe {
+	width: 0px;
+	height: 0px;
+	margin: 0px;
+	padding: 0px;
+
+	border: 0px;
+}
+form#adm-mp-stats-form {
+    position: relative;
+}
+div.adm-mp-stats-geeky {
+    width: 630px;
+    margin: 10px;
+}
+table.adm-mp-stats-geeky td {
+    padding: 2px 0px;
+}
+table.adm-mp-stats-geeky th {
+    text-align: left;
+}

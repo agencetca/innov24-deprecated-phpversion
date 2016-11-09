@@ -1,0 +1,266 @@
+.noscroll
+{
+    overflow: hidden;
+}
+
+
+/* CONFIGURE ME SECTION */
+
+.close_button_top{
+position: absolute;
+width: 60px;
+height: 11px;
+background-color: #333;
+top: 115px;
+border: 3px solid #333;
+left: 106px;
+border-radius:7%;
+color: white;
+text-align: center;
+font-size: 9px;
+cursor: pointer;
+padding-bottom: 2px;
+}
+
+.configure_me_title{
+border: 1px solid #333;
+padding: 10px 5px 8px 10px;
+}
+
+.form_configureme
+{
+margin-top: 36px;
+margin-left: 7px;
+padding: 5px 5px 5px 5px;
+background-color: #FFF; 
+position: relative;
+border: 5px solid #333;
+border-left: 5px solid #333;
+border-right: 5px solid #333;
+/* border-radius: 25px; */
+width: 90%;
+max-height: 400px;
+overflow: scroll;
+overflow-x: hidden;
+display:none;
+}
+
+.box_all_cats{
+margin-right : 15px;
+}
+
+
+.input_configureme:first-child{
+margin: 0 0 0 0;
+}
+
+
+.input_configureme
+{
+position: relative;
+float: right;
+margin: 15px 0 0 0px;
+padding: 2px 2px 2px 0;
+border: 1px solid #333;
+color: black;
+width: 90%;
+border-radius: 5px;
+}
+
+.single{
+position: relative;
+float: right;
+width: 80%;
+text-align: left;
+margin-top: 3px;
+margin-right: 15px;
+overflow: hidden;
+  -o-text-overflow: ellipsis; /* pour Opera 9 */
+  text-overflow: ellipsis; 
+}
+.reset_cat{
+width: 40px;
+height: 10px;
+margin-top: -11px;
+margin-left: 8px;
+cursor: pointer;
+}
+.response_reset_cat{
+width: 20px;
+height: 10px;
+margin-top: -10px;
+margin-left: 45px;
+}
+.propose_a_category{
+width: 150px;
+height: 10px;
+margin-top: -10px;
+cursor: pointer;
+}
+
+
+/* MY CATEGORIES */
+
+
+.list_my_categories{
+list-style: none;
+margin-left:-5px;
+width: 90%;
+/* max-height: 400px; */
+overflow: scroll;
+position: relative;
+float:left;
+}
+
+
+.my_categories_element{
+background-color:#CED8F6;
+margin-top: 10px;
+border: 1px solid #08088A;
+border-radius: 2%;
+text-align: center;
+opacity: 0.9;
+position: relative;
+width: 70%;
+min-height: 30px;
+padding: 10px 10px 5px 10px;
+}
+.my_categories_element:hover{
+opacity: 1;
+}
+.my_categories_text{
+font-weight: bold;
+color: #000;
+overflow: hidden;
+  -o-text-overflow: ellipsis; /* pour Opera 9 */
+  text-overflow: ellipsis; 
+}
+.close_cat{
+position: relative;
+float: right;
+width: 10px;
+height: 6px;
+background-color: white;
+margin-top:-10px;;
+margin-right:-10px;
+padding-bottom:4px;
+border-radius: 2px;
+cursor : pointer;
+}
+.like_cat{
+position: relative;
+float: left;
+width: 45px;
+height: 45px;
+background-color: #CED8F6;
+margin-top: -10px;
+margin-left:-10px;
+/* padding: 5px 5px 5px 5px; */
+border-right: 10px solid #CED8F6;
+}
+.close_cat_txt
+{
+position: relative;
+float: right;
+margin-right: 1px;
+margin-top: -3px;
+color: red;
+}
+.number_likes{
+position: relative;
+width: 100%;
+height: 35%;
+background-color: #A0B5FA;
+display: none;
+
+}
+.like_button{
+position: relative;
+width: 100%;
+height: 66%;
+background: url("icons/like.png") no-repeat scroll 0 0 transparent;
+cursor : pointer;
+}
+
+.like_txt{
+
+border: 1px solid #333;
+font-size: 10px;
+font-family: arial;
+min-width: 55%;
+position: relative;
+float: right;
+margin-top: 3px;
+margin-right: 1px;
+padding: 1px 1px 1px 1px;
+cursor : pointer;
+}
+.no_categories{
+position: relative;
+float: left;
+width: 100%;
+height: 200px;
+background-color: white;
+margin-left: -30px;
+margin-top : 120px;
+}
+
+
+.no_categories
+{
+	width: 85%;
+	height: 20px;
+ 	border-radius: 6px;
+ 	-webkit-border-radius: 6px;
+ 	-moz-border-radius: 6px;
+ 	margin: 10px 6px 10px -30px;
+ 	padding: 250px 0 5px 50px;
+ 	text-align:center;
+ 	color :#8D8899;
+ 	font-weight: bold;
+ 	opacity: 0.2;
+}
+.no_categories_img
+{
+	background: url("icons/no_cat.png") no-repeat scroll 0 0 transparent; */
+	width: 40%;
+	height: 170px;
+	margin-right: 50px;
+	margin-top: -200px;
+}
+.no_categories_txt
+{
+	position: relative;
+	font-size: 16px;
+	color: #000;
+	opacity: 1;
+	margin-top: -30px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

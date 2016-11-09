@@ -1,0 +1,16 @@
+<table width="100%" class="form_advanced_table points-action-items" cellpadding="0" cellspacing="0">
+        <tr height="15">
+			<th><bx_text:_aqb_points_action_title /></th>
+            <th><bx_text:_aqb_points_num /></th>
+            <th><bx_text:_aqb_points_limit /></th>
+            <th><bx_text:_aqb_points_active /></th>
+	    </tr>
+		<bx_repeat:points_actions>
+		<tr id = "__row_id__">
+            <td align="center" width="50%">__title__</td>
+            <td align="center">__points_num__</td>
+	        <td align="center">__points_limit__</td>
+   			<td align="center"><input type="checkbox" class="input_wrapper input_wrapper_checkbox" name="points_actions[]" value="__id__" __checked__/>	&nbsp;__delete__</td> 			
+		</tr>
+		</bx_repeat:points_actions>
+</table>

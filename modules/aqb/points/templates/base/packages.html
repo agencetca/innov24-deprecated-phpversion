@@ -1,0 +1,34 @@
+<form id="packages-form" enctype="multipart/form-data" method="post" action="" class="form_advanced">
+    <div class="points-db-control-panel">
+        <div class="points-mlevels-label">
+            <bx_text:_aqb_admin_points_number />
+        </div>
+        <div class="input_wrapper input_wrapper_text points-mlevels-input">
+            <input type="text" name="points" value="" class="form_input_text" />
+            <div class="input_close input_close_text">&nbsp;</div>
+        </div>
+        <div class="points-mlevels-label">
+            <bx_text:_aqb_admin_packages_price />
+        </div>
+        <div class="input_wrapper input_wrapper_text points-mlevels-input">
+            <input type="text" name="price" value="" class="form_input_text" />
+            <div class="input_close input_close_text">&nbsp;</div>
+        </div>
+        <div class="points-mlevels-btn">
+            <div class="button_wrapper">
+                <input type="submit" value="<bx_text:_aqb_points_admin_add_price />" name="package-add" class="form_input_submit" />
+                <div class="button_wrapper_close">&nbsp;</div>
+            </div>
+        </div>
+        <div class="clear_both">&nbsp;</div>
+    </div>
+    <div class="points-mlevels-items">
+        <bx_repeat:items>
+            <div class="points-mlevels-item">
+                <input type="checkbox" class="form_input_checkbox" id="__points__" name="packages[]" value="__points__" />
+                <label for="packages-__points__">__title__</label>
+            </div>
+        </bx_repeat:items>
+    </div>
+    __controls__
+</form>

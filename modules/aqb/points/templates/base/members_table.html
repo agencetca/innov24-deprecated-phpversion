@@ -1,0 +1,26 @@
+<span class="points-top-paginate">__paginate__</span>
+<div class="points-members-table">
+    <table width="100%" class="points-members-table" cellpadding="0" cellspacing="0">
+        <tr height="20px">
+            <th>&nbsp;</th>
+            <th><a href="javascript:void(0);" __username_function__ ><bx_text:_aqb_points_txt_username /> __username_arrow__</a></th>
+            <th><a href="javascript:void(0);" __registration_function__ ><bx_text:_aqb_points_txt_registration /> __registration_arrow__</a></th>
+            <th><a href="javascript:void(0);" __last_login_function__ ><bx_text:_aqb_points_txt_last_login /> __last_login_arrow__</a></th>   
+            <th style="text-align:center;"><a href="javascript:void(0);" __points_num_function__ ><bx_text:_aqb_points_txt_num />__points_num_arrow__</a></th> 
+			<th style="text-align:center;"><bx_text:_aqb_points_txt_history_title /></th>
+			<th style="text-align:center;"><bx_text:_aqb_points_txt_actions /></th>
+	     </tr>
+        <bx_repeat:items>
+            <tr class="points-active">
+                <td width="20"><input type="checkbox" class="form_input_checkbox" id="points-mb-__id__" name="members[]" value="__id__" /></td>
+                <td width="*"><a href="__edit_link__">__username__</a></td>
+                <td width="*">__registration__</td>
+                <td width="*">__last_login__</td>
+                <td width="*" style="text-align:center;">__points_num__</td>
+				<td width="*" style="text-align:center;">__history__&nbsp;|&nbsp;__history_clean__</td>
+				<td width="*" style="text-align:center;">__present__&nbsp;|&nbsp;__penalty__</td>
+            </tr>
+        </bx_repeat:items>
+    </table>
+</div>
+__paginate__

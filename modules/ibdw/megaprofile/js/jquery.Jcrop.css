@@ -1,0 +1,65 @@
+/* Fixes issue here http://code.google.com/p/jcrop/issues/detail?id=1 */
+.jcrop-holder { text-align: left; }
+
+.jcrop-vline, .jcrop-hline
+{
+	font-size: 0;
+	position: absolute;
+	background: white url('Jcrop.gif') top left repeat;
+}
+.jcrop-vline { height: 100%; width: 1px !important; }
+.jcrop-hline { width: 100%; height: 1px !important; }
+.jcrop-handle {
+	font-size: 1px;
+	width: 7px !important;
+	height: 7px !important;
+	border: 1px #eee solid;
+	background-color: #333;
+	*width: 9px;
+	*height: 9px;
+}
+
+.jcrop-tracker { width: 100%; height: 100%; }
+
+.custom .jcrop-vline,
+.custom .jcrop-hline
+{
+	background: yellow;
+}
+.custom .jcrop-handle
+{
+	border-color: black;
+	background-color: #C7BB00;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius:3px;
+}
+
+.jcropper-holder { border: 1px black solid; }
+
+#outer {
+	text-align: center;
+}
+
+.jcExample
+{
+	text-align: left;
+	background: white;
+	width: 700px;
+	font-size: 80%;
+	margin: 3.5em auto 2em auto;
+	*margin: 3.5em 10% 2em 10%;
+	border: 1px black solid;
+	padding: 1em 2em 2em;
+}
+
+.jcExample .article
+{
+	width: 565px;
+}
+
+.jcExample p
+{ 
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+	font-size: 90%;
+}

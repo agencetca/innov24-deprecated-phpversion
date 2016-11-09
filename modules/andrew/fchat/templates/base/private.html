@@ -1,0 +1,179 @@
+<div class="slideout">
+    <img class="iopen" src="<bx_image_url:toggle.png />" alt="" />
+    <img class="iopen3" src="<bx_image_url:feedback.png />" href="#?w=750" rel="bugreport" onclick= "bugreport()"/>
+    <img class="iopen2" src="<bx_image_url:bugs.png />" href="#?w=750" rel="bugreport" onclick= "bugreport()"/>
+    <div class="slideout_inner">
+        <img class="iclose" src="<bx_image_url:bclose.png />" alt="" />
+        <input type="text" class="fchFilter" name="filter" id="filter" placeholder="<bx_text:_fch_filter />" value="<bx_text:_fch_filter />" onclick="if(this.value == '<bx_text:_fch_filter />') this.value='';" onblur="if(this.value.length == 0) this.value='<bx_text:_fch_filter />';">
+        <script>
+            $.extend($.expr[':'], {'containsi': function(elem, i, match, array) {
+                return (elem.textContent || elem.innerText || '').toLowerCase()
+                .indexOf((match[3] || "").toLowerCase()) >= 0;
+            }});
+
+            $('input.fchFilter').keyup(function() {
+                var fchFiKe = $(this).val();
+
+                if (fchFiKe) {
+                    $('.profiles > div').hide();
+                    $('.profiles > div:containsi("'+fchFiKe+'")').show();
+                } else {
+                    $('.profiles > div').show();
+                }
+            });
+        </script>
+        <div class="clear_both"></div>
+        <br />
+        <div class="fch_groups">
+            <bx_if:show_onlinefriends>
+            <div>
+                <h2><bx_text:_fch_online_friends /></h2>
+                __online_friends__
+            </div>
+            <div class="clear_both"></div>
+            </bx_if:show_onlinefriends>
+            <bx_if:show_online>
+            <div>
+                <h2><bx_text:_fch_mem_online /></h2>
+                __online_members__
+            </div>
+            <div class="clear_both"></div>
+            </bx_if:show_online>
+            <bx_if:show_friends>
+            <div>
+                <h2><bx_text:_fch_friends /></h2>
+                __friends__
+            </div>
+            <div class="clear_both"></div>
+            </bx_if:show_friends>
+            <bx_if:show_last>
+            <div>
+                <h2><bx_text:_fch_mem_last /></h2>
+                __last_members__
+            </div>
+            <div class="clear_both"></div>
+            </bx_if:show_last>
+        </div>
+    </div>
+</div>
+
+<div class="priv_dock_wrap"></div>
+<div class="priv_dock_wrap_sessions"><p><bx_text:_fch_dialogs /></p></div>
+
+
+<!-- Modified/Added by tig -->
+
+			<script>
+
+			if (window.XMLHttpRequest){
+			xmlhttp=new XMLHttpRequest();
+			}
+			else {
+			xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+			document.getElementById("bugreport").innerHTML=xmlhttp.responseText;
+			}
+			}
+			xmlhttp.open("GET","http://localhost/innov24/tig_popups_right_side/bugsreport/Controleur/index.php",true);
+			xmlhttp.send();
+
+			</script>
+
+<div>
+
+</div>
+
+<div id="bugreport" class="bugreport">
+
+<div style="margin-top: 30%;">
+<center><img src="http://localhost/innov24/templates/tmpl_oounisoft/images/loading.gif"/></center>
+</div>
+
+</div>
+
+<script>
+
+function bugreport() {
+
+    var popID = $('img.iopen2[href^=#]').attr('rel'); //Trouver la pop-up correspondante
+    var popURL = $('img.iopen2[href^=#]').attr('href'); //Retrouver la largeur dans le href
+
+  //Récupérer les variables depuis le lien
+  var query= popURL.split('?');
+  var dim= query[1].split('&amp;');
+  var popWidth = dim[0].split('=')[1]; //La première valeur du lien
+
+  //Faire apparaitre la pop-up et ajouter le bouton de fermeture
+  $('#' + popID).fadeIn().css({
+    'width': Number(popWidth)
+  })
+
+  //Récupération du margin, qui permettra de centrer la fenêtre - on ajuste de 80px en conformité avec le CSS
+  var popMargTop = ($('#' + popID).height() + 80) / 2;
+  var popMargLeft = ($('#' + popID).width() + 80) / 2;
+
+  //On affecte le margin
+  $('#' + popID).css({
+    'margin-top' : -popMargTop,
+    'margin-left' : -popMargLeft
+  });
+
+  //Effet fade-in du fond opaque
+  $('body').append('<div id="fade"></div>'); //Ajout du fond opaque noir
+  //Apparition du fond - .css({'filter' : 'alpha(opacity=80)'}) pour corriger les bogues de IE
+  $('#fade').css({'filter' : 'alpha(opacity=80)'}).fadeIn();
+  return false;
+
+}//fin de la fonction
+
+//Fermeture de la pop-up et du fond
+$('img.close, #fade').live('click', function() { //Au clic sur le bouton ou sur le calque...
+  $('#fade , #bugreport').fadeOut(function() {
+    $('#fade, img.close').remove();  //...ils disparaissent ensemble
+  });
+  return false;
+});
+
+    $('#bugreport').mouseover(function() {
+        $('body').css( "overflow", "hidden" );
+    });
+
+    $('#bugreport').mouseout(function() {
+        $('body').css( "overflow", "scroll" );
+    });
+
+</script>
+
+<script>
+
+function cancel() {
+//Fermeture du pop-up
+$('img.close, #fade, #bugreport').fadeOut();
+$('#fade').remove();
+}
+
+</script>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

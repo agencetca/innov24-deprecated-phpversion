@@ -1,0 +1,2393 @@
+<?php
+require_once( BX_DIRECTORY_PATH_CLASSES . 'Thing.php' );
+require_once( BX_DIRECTORY_PATH_CLASSES . 'BxDolPrivacy.php' );
+require_once( BX_DIRECTORY_PATH_PLUGINS . 'Services_JSON.php' );
+require_once(BX_DIRECTORY_PATH_MODULES . 'modloaded/pages/classes/MlPagesPSFM.php');
+ini_set("memory_limit","120M");
+class MlPagesPageFields extends Thing {
+    var $iAreaID;
+    var $aArea; // just a cache array
+    var $aBlocks; // array of current blocks
+    var $aCache; // full cache of profile fields
+    var $aCoupleMutual; //couple mutual fields
+    var $aErrors; 
+    var $sLinkPref = '#!'; //prefix for values links
+    
+    function MlPagesPageFields( $iAreaID, $sSubCategory = 0) {
+    		global $site;
+    		$this -> sSubCategory = $sSubCategory;
+				$this -> sCacheFile = BX_DIRECTORY_PATH_DBCACHE . 'db_' . 'ml_pages_fields'. '_' . md5($site['ver'] . $site['build'] . $site['url']) . '.php';;
+        $this -> iAreaID = $iAreaID;
+        switch($this -> iAreaID)
+        {
+        	case 1 : 
+        		$this -> areaPageName = 'Join';
+        	break;
+        	case 2 :
+        		$this -> areaPageName = 'Edit';
+        	break;
+        	case 5 :
+        		$this -> areaPageName = 'View';
+        	break;
+        	case 9 :
+        		$this -> areaPageName = 'Browse';
+        	break;
+        }
+        $this->sMainCategory = $_POST['main_category'] ? $_POST['main_category'] : $this -> sMainCategory;
+       	$this->sSubCategory = $_POST['sub_category'] ? $_POST['sub_category'] : $this -> sSubCategory;
+    		if (!$GLOBALS['MySQL']->getOne("SELECT 1 FROM `ml_pages_categories` WHERE `ID`='{$this->sSubCategory}' LIMIT 1"))
+       		$this->sSubCategory = 0;
+        if( !$this -> loadCache() )
+            return false;
+            
+				$oModuleDb = new BxDolModuleDb();
+				$this->_aModule = $oModuleDb->getModuleByUri('pages');
+				$this->_oMain = new MlPagesModule($this->_aModule);        
+
+        $sDelimeter = getParam('ml_pages_multi_divider');
+        $this->_sDelimeter = $sDelimeter ? $sDelimeter : ';';     
+        
+				$this->_iProfileId = getLoggedId();
+        $this->_aMedia = array (
+            'photos' => array (
+                'post' => 'ready_images',
+                'upload_func' => 'uploadPhotos',
+                'tag' => BX_WELLS_PHOTOS_TAG,
+                'cat' => BX_WELLS_PHOTOS_CAT,
+                'thumb' => 'thumb',
+                'module' => 'photos',
+                'title_upload_post' => 'images_titles',
+                'title_upload' => _t('_ml_pages_form_caption_file_title'),
+                'service_method' => 'get_photo_array',
+            ),
+            'videos' => array (
+                'post' => 'ready_videos',
+                'upload_func' => 'uploadVideos',
+                'tag' => BX_WELLS_VIDEOS_TAG,
+                'cat' => BX_WELLS_VIDEOS_CAT,
+                'thumb' => false,
+                'module' => 'videos',
+                'title_upload_post' => 'videos_titles',
+                'title_upload' => _t('_ml_pages_form_caption_file_title'),
+                'service_method' => 'get_video_array',
+            ),            
+            'sounds' => array (
+                'post' => 'ready_sounds',
+                'upload_func' => 'uploadSounds',
+                'tag' => BX_WELLS_SOUNDS_TAG,
+                'cat' => BX_WELLS_SOUNDS_CAT,
+                'thumb' => false,
+                'module' => 'sounds',
+                'title_upload_post' => 'sounds_titles',
+                'title_upload' => _t('_ml_pages_form_caption_file_title'),
+                'service_method' => 'get_music_array',
+            ),  
+            'files' => array (
+                'post' => 'ready_files',
+                'upload_func' => 'uploadFiles',
+                'tag' => BX_WELLS_FILES_TAG,
+                'cat' => BX_WELLS_FILES_CAT,
+                'thumb' => false,
+                'module' => 'files',
+                'title_upload_post' => 'files_titles',
+                'title_upload' => _t('_ml_pages_form_caption_file_title'),
+                'service_method' => 'get_file_array',
+            ),  
+        );
+
+    }
+
+   function _getPageDataById( $iID )
+		{
+			$iID = (int)$iID;
+			return db_arr( "SELECT * FROM `ml_pages_main` WHERE `id` = '$iID'" );
+		}
+		function _getPageData($iID) {
+			global $aUser;
+	
+			$bUseCacheSystem = ( getParam('enable_cache_system') == 'on' ) ? true : false;
+	
+			$sPageCache = BX_DIRECTORY_PATH_CACHE . 'boonex/wells/' . $iID . '.php';
+			if( $bUseCacheSystem && file_exists( $sPageCache ) && is_file( $sPageCache ) ) {
+				require_once($sPageCache);
+				$this -> _aPage = $aUser[$iID];
+			} else
+				$this -> _aPage = $this ->_getPageDataById( $iID );
+		}
+		function showBlockPFBlock( $iPageBlockID, $sCaption, $sContent, $bNoDB = false, $iId, $aPFBlocks ) {	
+			if (!$iId) return;
+			
+			$this->_getPageData($iId);	
+	    $iPFBlockID = (int)$sContent;
+			$this->aPFBlocks = $aPFBlocks;
+	    $sRet = $this->_getViewValuesTable($iPageBlockID, $iPFBlockID);
+	
+			if ($bNoDB) {
+							$iHeight = $this->aPFBlocks[$iPFBlockID]['BoxHeight'];
+							$sAddStyle = is_numeric($iHeight) && $iHeight > 0 ? "height:{$iHeight}px;overflow:auto;" : '';
+		          return empty($sRet) ? $sRet : array('<div class=" bx_sys_default_padding" style="'.$sAddStyle.'">' . $sRet . '</div>', array(), array(), '');
+			} 
+	        else
+	            echo DesignBoxContent( _t($sCaption), $sRet, 1 );
+		}		
+    function _getViewValuesTable($iPageBlockID, $iPFBlockID) {
+
+			if( !isset( $this->aPFBlocks[$iPFBlockID] ) or empty( $this->aPFBlocks[$iPFBlockID]['Items'] ) )
+				return '';
+				$aItems = $this->aPFBlocks[$iPFBlockID]['Items'];
+        $aInputs = array();
+        foreach( $aItems as $aItem ) {
+        		$aItemType = explode(',', $aItem['Categories']);
+        		if (!in_array($this->_aPage['category'], $aItemType)) continue;
+        		$sValues = '';
+            $sItemName = $aItem['Name'];
+						if (!$this->_aPage[$sItemName]) continue;
+           	
+
+            elseif (!$aItem['Multiplyable'])
+           		$sValue1   = $this->_aPage[$sItemName];
+
+            if ($aItem['Name'] == 'Age') 
+                $sValue1 = $this->_aPage['DateOfBirth'];
+            if ($sValue1 || $aItem['Type'] == 'bool') { //if empty, do not draw
+                $aInputs[] = array(
+                    'type'    => 'value',
+                    'colspan' => $aItem['CaptionDisable'] ? '1' : '',
+                    'name'    => $aItem['Name'],
+                    'caption' => $aItem['CaptionDisable'] ? '' : _t($aItem['Caption']),
+                    'value'   => $this->getViewableValue($aItem, $sValue1, $aItem['WithPhoto']),
+                );
+            }
+ 					}
+        
+        
+        if (empty($aInputs))
+            return '';
+        $aFormAttrs = array(
+            'name' => 'view_profile_form',
+        );
+        
+        $aFormParams = array(
+            'remove_form'    => true,
+        );
+        
+        // generate form array
+        $aForm = array(
+            'form_attrs' => $aFormAttrs,
+            'params'     => $aFormParams,
+            'inputs'     => $aInputs,
+        );
+        
+        $oForm = new BxTemplFormView($aForm);
+        
+        return $oForm->getCode();
+    }		
+    function loadOldCache( $bCycle = true ) {
+        if(
+            !file_exists( $this -> sCacheFile ) or
+            !$sCache = file_get_contents( $this -> sCacheFile ) or
+            !$this -> aCache = eval( $sCache ) or
+            !is_array($this -> aCache)
+        ) {
+            $oPFM = new BxDolPSFMCacher($this->sSubCategory);
+            
+            /* if( !$oPFM -> createCache() )
+                return false; */
+            
+            if( $bCycle ) //to prevent cycling
+                return $this -> loadCache( false ); // try againg
+            else
+                return false;
+        }
+        
+        $this -> aArea = $this -> aCache[ $this -> iAreaID ];
+        
+        //load blocks
+        $this -> aBlocks = $this -> aArea;
+        
+        //get mutual fields
+        //$this -> _getCoupleMutualFields();
+        
+        return true;
+    }
+        
+    function loadCache( $bCycle = true ) {
+				global $site;
+				if ((int)$site['build'] < 3)
+				{
+					$this->loadOldCache();
+					return true;
+				}
+        $oCache = $GLOBALS['MySQL']->getDbCacheObject();
+        $this -> aCache = $oCache->getData($GLOBALS['MySQL']->genDbCacheKey('ml_pages_fields'));
+        if (null === $this -> aCache || empty($this->aCache)) {
+            $oPFM = new BxDolPSFMCacher($this->sSubCategory);
+
+            /* if (!$oPFM -> createCache())
+                return false; */
+
+            if ($bCycle) //to prevent cycling
+                return $this -> loadCache (false); // try againg
+            else
+                return false;
+        }
+        $this -> aArea = $this -> aCache[ $this -> iAreaID ];
+        //load blocks
+        $this -> aBlocks = $this -> aArea;
+
+        //get mutual fields
+        //$this -> _getCoupleMutualFields();
+        
+        return true;
+    }
+    
+    function genJsonErrors( $aErrors, $bCouple ) {
+        $aJsonErrors = array();
+        
+        $aJsonErrors[0] = $aErrors[0];
+        if( $bCouple )
+            $aJsonErrors[1] = $aErrors[1];
+        
+        $oParser = new Services_JSON();
+        return $oParser -> encode( $aJsonErrors );
+    }
+    
+    
+    //sets to $Errors intuitive array
+    function processPostValues( $bCouple, &$aValues, &$aErrors, $iPageId = 0, $iProfileID = 0, $iBlockOnly = 0 ) {
+        $iHumans = $bCouple ? 2 : 1; // number of members in profile (single/couple), made for double arrays
+        if( $this -> iAreaID == 1 ) // join
+            $this -> aBlocks = $this -> aArea[$iPageId];
+
+        foreach( $this -> aBlocks as $iBlockID => $aBlock ) {
+        		if (!$aBlock['Categories']) continue;
+        		$aCategories = explode(',', $aBlock['Categories']);
+        		if (!in_array($this->sSubCategory, $aCategories)) continue;
+            if ($iBlockOnly > 0 and $iBlockOnly != $iBlockID)
+                continue;
+//print_r( $_FILES).'<br>';
+            $aItems = $aBlock['Items'];
+            foreach ($aItems as $iItemID => $aItem) {
+            if (!$aItem['Categories']) continue;
+        		$aCategories = explode(',', $aItem['Categories']);
+        		if (!in_array($this->sSubCategory, $aCategories)) continue;
+                $sItemName = $aItem['Name'];
+                
+                for( $iHuman = 0; $iHuman < $iHumans; $iHuman ++ ) {
+                    if( $iHuman == 1 and in_array( $sItemName, $this -> aCoupleMutual ) )
+                        continue;
+           
+                    $mValue = null;
+                    $aProcValues = array();
+                    switch( $aItem['Type'] ) {
+                        case 'text':
+                        case 'area':
+                        case 'pass':
+                        case 'select_one':
+
+                        		if (($aItem['Multiplyable'] || $aItem['Attribute'] != 'none') && !empty($_POST[$sItemName]))
+                        		{
+                        			foreach($_POST[$sItemName] as $sKey => $sValue)
+                        				$aProcValues[$sKey] = process_pass_data($sValue);
+                        			$mValue = implode($this->_sDelimeter, $aProcValues);
+                        		}
+                            elseif( isset( $_POST[$sItemName] ) and isset( $_POST[$sItemName][$iHuman] ) )
+                                $mValue = process_pass_data( $_POST[$sItemName][$iHuman] );
+                            if ($aItem['MediaType'] != 'none' && isset($_FILES[$aItem['Name']]))
+                            {
+															for ($i=0; $i < count($_FILES[$aItem['Name']]['tmp_name']); $i++)
+															{
+																if (!$_FILES[$aItem['Name']]['tmp_name'][$i])
+																	$mValueMedia[$i] = 0;
+																elseif ($_FILES[$aItem['Name']]['error'][$i] == UPLOAD_ERR_OK) 
+																{
+										             $sTmpName  = tempnam($GLOBALS['dir']['tmp'], 'mediafield');
+										             if (move_uploaded_file($_FILES[$aItem['Name']]['tmp_name'][$i], $sTmpName))
+										             	$mValueMedia[$i] = basename($sTmpName);
+											          }
+															}
+															if (!empty($mValueMedia))
+																$mValue = implode($this->_sDelimeter, $mValueMedia);
+														}
+                            if ($aItem['WithPhoto'] && isset($_FILES[$aItem['Name'] . '_photo']))
+                            {
+															for ($i=0; $i < count($_FILES[$aItem['Name'] . '_photo']['tmp_name']); $i++)
+															{
+																if (!$_FILES[$aItem['Name'] . '_photo']['tmp_name'][$i])
+																	$mValuePhoto[$i] = 0;
+																elseif ($_FILES[$aItem['Name'] . '_photo']['error'][$i] == UPLOAD_ERR_OK) 
+																{
+											             $sTmpName  = tempnam($GLOBALS['dir']['tmp'], 'pphotfield');
+											             if (move_uploaded_file($_FILES[$aItem['Name'] . '_photo']['tmp_name'][$i], $sTmpName))
+											               $mValuePhoto[$i] = basename($sTmpName);
+											          }
+															}
+															if (!empty($mValuePhoto))
+																$mValuePhotos = implode($this->_sDelimeter, $mValuePhoto);
+														}
+                        break;
+                        case 'html_area':
+                        		if ($aItem['Multiplyable'])
+                        		{
+                        			foreach($_POST[$sItemName] as $sKey => $sValue)
+                        				$aProcValues[$sKey] = clear_xss(process_pass_data($sValue));
+                        			$mValue = implode($this->_sDelimeter, $aProcValues);
+                            }
+                            elseif( isset( $_POST[$sItemName] ) and isset( $_POST[$sItemName][$iHuman] ) )
+                                $mValue = clear_xss( process_pass_data($_POST[$sItemName][$iHuman]) );
+                        break;
+
+                        case 'bool':
+                            if( isset( $_POST[$sItemName] ) and isset( $_POST[$sItemName][$iHuman] ) and $_POST[$sItemName][$iHuman] == 'yes' )
+                                $mValue = true;
+                            else
+                                $mValue = false;
+                        break;
+                        
+                        case 'num':
+                            if( isset( $_POST[$sItemName] ) and isset( $_POST[$sItemName][$iHuman] ) and trim( $_POST[$sItemName][$iHuman] ) !== '' )
+                                $mValue = (int)trim( $_POST[$sItemName][$iHuman] );
+                        break;
+                        
+                        case 'date':
+                        	if( isset( $_POST[$sItemName] ))
+                        		$mValue = $_POST[$sItemName][$iHuman];
+                           /* if( isset( $_POST[$sItemName] ) and isset( $_POST[$sItemName][$iHuman] ) and trim( $_POST[$sItemName][$iHuman] ) !== '' ) {
+                                list( $iYear, $iMonth, $iDay ) = explode( '-', $_POST[$sItemName][$iHuman] ); // 1985-10-28
+                                
+                                $iDay   = intval($iDay);
+                                $iMonth = intval($iMonth);
+                                $iYear  = intval($iYear);
+                                
+                                $mValue = sprintf("%04d-%02d-%02d", $iYear, $iMonth, $iDay);
+                            }*/
+                        break;
+                        
+                        case 'select_set':
+                            $mValue = array();
+                            if( isset( $_POST[$sItemName] ) and isset( $_POST[$sItemName][$iHuman] ) and is_array( $_POST[$sItemName][$iHuman] ) ) {
+                                foreach ($_POST[$sItemName][$iHuman] as $sValue ) {
+                                    $mValue[] = process_pass_data( $sValue );
+                                }
+                            }
+                        break;
+                        
+                        case 'range':
+                            if( isset( $_POST[$sItemName] ) and isset( $_POST[$sItemName][$iHuman] ) and is_array( $_POST[$sItemName][$iHuman] ) ) {
+                                $aRange = $_POST[$sItemName][$iHuman];
+                                $mValue = array( null, null );
+                                
+                                $aRange[0] = isset( $aRange[0] ) ? trim( $aRange[0] ) : '';
+                                $aRange[1] = isset( $aRange[1] ) ? trim( $aRange[1] ) : '';
+                                
+                                if( $aRange[0] !== '' )
+                                    $mValue[0] = (int)$aRange[0];
+                                
+                                if( $aRange[1] !== '' )
+                                    $mValue[1] = (int)$aRange[1];
+                            }
+                        break;
+                        
+                        case 'system':
+                            switch( $aItem['Name'] ) {
+                                case 'Couple':
+                                case 'TermsOfUse':
+                                case 'Featured': //they are boolean
+                                    if( isset( $_POST[$sItemName] ) and $_POST[$sItemName] == 'yes' )
+                                        $mValue = true;
+                                    else
+                                        $mValue = false;
+                                break;
+                                
+                                case 'Captcha':
+                                case 'Status': // they are select_one                                
+                                    if( isset( $_POST[$sItemName] ) )
+                                        $mValue = process_pass_data( $_POST[$sItemName] );
+                                break;
+                                
+                                case 'thumb':
+                                    if (isset($_FILES['thumb'])) {
+                                        if ($_FILES['thumb']['error'] == UPLOAD_ERR_OK) {
+                                            $sTmpName  = tempnam($GLOBALS['dir']['tmp'], 'pphot');
+                                            if (move_uploaded_file($_FILES['thumb']['tmp_name'], $sTmpName))
+                                                $mValue = basename($sTmpName);
+                                        }
+                                    } elseif (isset($_POST['thumb']) && trim($_POST['thumb'])) {
+                                        $mValue = preg_replace('/[^a-zA-Z0-9\.]/', '', $_POST['thumb']);
+                                    }
+                                break;
+                            }
+                        break;
+                    }
+                    
+                    $rRes = $this -> checkPostValue( $iBlockID, $iItemID, $mValue, $iHuman, $iPageId, $mValueMedia );
+                    
+                    if( $rRes !== true && !$aItem['WithPhoto'] && $aItem['MediaType'] != 'map')
+                        $aErrors[$iHuman][$sItemName] = $rRes; //it is returned error text
+                    
+                    //if( $rRes !== true){
+                       // $aErrors[$iHuman][$sItemName] = $rRes; //it is returned error text  
+                      //  $aErrors[$sItemName] = $rRes;
+                      //}                  
+                    
+                    //if password on edit page
+                    if( $aItem['Type'] == 'pass' and ( $this -> iAreaID == 2 or $this -> iAreaID == 3 or $this -> iAreaID == 4 ) ) {
+                        if( empty($mValue) )
+                            $mValue = $aValues[$iHuman][$sItemName];
+                        else
+                            $mValue = encryptUserPwd($mValue, $aValues[$iHuman]['Salt']);
+                    }
+                    if ($mValuePhotos)
+                    	$aValues[$iHuman][$sItemName . '_photos'] = $mValuePhotos;
+
+                    	                    	                    
+                    $aValues[$iHuman][$sItemName] = $mValue;
+
+                }
+            }
+        }
+    }
+    
+    function checkPostValue( $iBlockID, $iItemID, $mValue, $iHuman, $iPageId, $mValueMedia = array() ) {
+        // get item
+        $aItem = $this -> aBlocks[$iBlockID]['Items'][$iItemID];
+        if( !$aItem )
+            return 'Item not found';
+        
+        $aChecks = array(
+            'text' => array( 'Mandatory', 'Min', 'Max', 'Unique', 'Check', 'MediaType' ),
+            'area' => array( 'Mandatory', 'Min', 'Max', 'Unique', 'Check' ),
+            'html_area' => array( 'Mandatory', 'Min', 'Max', 'Unique', 'Check' ),
+            'pass' => array( 'Mandatory', 'Min', 'Max', 'Check', 'PassConfirm' ),
+            'date' => array( 'Mandatory', 'Min', 'Max', 'Check' ),
+            'photo' => array( 'Photo', 'Mandatory' ),
+            'select_one' => array( 'Min', 'Max', 'Mandatory', 'Values', 'Check' ),
+            'select_set' => array( 'Min', 'Max', 'Mandatory', 'Values', 'Check' ),
+            'num'    => array( 'Mandatory', 'Min', 'Max', 'Unique', 'Check' ),
+            'range'  => array( 'Mandatory', 'RangeCorrect', 'Min', 'Max', 'Check' ),
+            'system' => array( 'System' ),
+            'bool'   => array( 'Mandatory' )
+        );
+        $aMyChecks = $aChecks[ $aItem['Type'] ];
+        
+        // if ($aItem['Type'] == 'date') return $mValue;
+        
+        foreach ($aMyChecks as $sCheck ) {
+
+            $sFunc = 'checkPostValueFor' . $sCheck;
+            
+            $mRes = $this -> $sFunc( $aItem, $mValue, $iHuman, $iPageId, $mValueMedia );
+            
+            if( $mRes !== true ) {
+                if( is_bool( $mRes ) ) // it is false...
+                    return _t( $aItem[ $sCheck . 'Msg' ], $aItem[$sCheck] );
+                else
+                    return $mRes; // returned as text
+            }
+        }
+        
+        return true;
+    }
+    function checkPostValueForMandatory( $aItem, $mValue, $iHuman, $iPageId ) {
+        if( !$aItem['Mandatory'] )
+            return true;
+        $aMedia = array('photo', 'video', 'sound', 'file', 'rss', 'youtube');
+        if (!$mValue && in_array($aItem['MediaType'], $aMedia))
+        {
+        	if ($this -> iAreaID == 1)
+        		return false;
+        	switch($aItem['MediaType'])
+        	{
+        		case 'photo';
+	      				$sTable = 'ml_pages_images';
+	      				$iIdField = 'entry_id';
+        		break;
+        		case 'sound';
+			  				$sTable = 'ml_pages_sounds';
+			  				$iIdField = 'entry_id';
+        		break;
+        		case 'video';
+			  				$sTable = 'ml_pages_videos';
+			  				$iIdField = 'entry_id';
+        		break;
+        		case 'file';
+			  				$sTable = 'ml_pages_files';
+			  				$iIdField = 'entry_id';
+        		break;
+        		case 'rss';
+						    $sTable = 'ml_pages_rss';
+						    $iIdField = 'id_entry';
+        		break;
+        		case 'youtube';
+						    $sTable = 'ml_pages_youtube';
+						    $iIdField = 'id_entry';
+        		break;
+        	}
+	      	if (!db_value("SELECT 1 FROM `{$sTable}` WHERE `{$iIdField}` = {$iPageId} LIMIT 1"))
+	      	return false;
+        }
+        elseif (!in_array($aItem['MediaType'], $aMedia))
+        {
+	        if( $aItem['Type'] == 'num' ) {
+	            if( is_null($mValue) )
+	                return false;
+	        } elseif( $aItem['Type'] == 'range' ) {
+	            if( is_null($mValue[0]) or is_null($mValue[1]) )
+	                return false;
+	        } elseif( $aItem['Type'] == 'pass' ) {
+	            if( $this -> iAreaID == 2 or $this -> iAreaID == 3 or $this -> iAreaID == 4 ) // if area is edit, non-mandatory
+	                return true;
+	            else
+	                if( empty($mValue) ) // standard check
+	                    return false;
+	        } else {
+	            if( empty($mValue) )
+	                return false;
+	        }
+	      }
+        
+        return true;
+    }
+    function checkPostValueForMediaType($aItem, $mValue, $iHuman, $iPageId, $mValueMedia) 
+    {
+    	return true;
+			if ($aItem['MediaType'] == 'none')
+				return true;
+			switch($aItem['MediaType'])
+			{
+				case 'photo':
+					$aExt = explode(' ', getParam('bx_photos_allowed_exts'));
+				break;
+				case 'video':
+					$aExt = explode(' ', getParam('bx_videos_allowed_exts'));
+				break;
+				case 'sound':
+					$aExt = explode(' ', getParam('bx_sounds_allowed_exts'));
+				break;
+				case 'file':
+					$aExt = explode(' ', getParam('bx_files_allowed_exts'));
+				break;
+			}
+			for ($i=0; $i < count($mValueMedia); $i++)
+			{
+				//$sFileName = $GLOBALS['dir']['tmp'] . $mValueMedia[$i];
+				//if ($mValueMedia[$i] && !file_exists($sFileName))
+				//return 'No way! File not exists: ' . $sFileName;
+				if (!empty($aExt))
+				{
+					$aFile = explode('.', $mValue);
+					if (!in_array(end($aFile), $aExt))
+						return _t( '_ml_pages_invalid_media_ext', $aItem['MediaType']);
+				}
+			}
+			return true;	
+    }
+		function checkPostValueForWithPhoto($aItem, $mValue, $iHuman, $iPageId, $mValuePhoto) 
+		{
+			if (!$aItem['WithPhoto'] || !isset($_FILES[$aItem['Name'] . '_photo']) || empty($mValuePhoto))
+				return true;
+			for ($i=0; $i<count($mValuePhoto); $i++)
+			{
+	     $sFileName = $GLOBALS['dir']['tmp'] . $mValuePhoto[$i];
+	     if ($mValuePhoto[$i] && !file_exists($sFileName)) // hack attempt
+	     	return 'No way! File not exists: ' . $sFileName;
+	      $aSize = @getimagesize($sFileName);
+	      if ($mValuePhoto[$i] && !$aSize) {
+	          @unlink($sFileName);
+	          return _t( '_Please specify image file' );
+	      }
+	      
+	      if ($mValuePhoto[$i] && $aSize[2] != IMAGETYPE_GIF && $aSize[2] != IMAGETYPE_JPEG && $aSize[2] != IMAGETYPE_PNG) {
+	          unlink($sFileName);
+	          return _t( '_Please specify image of JPEG, GIF or PNG format' );
+	      }
+			}
+			return true;
+
+    }
+    
+    function checkPostValueForPassConfirm( $aItem, $mValue, $iHuman ) {
+        $sConfPass = process_pass_data( $_POST[ "{$aItem['Name']}_confirm" ][$iHuman] );
+        if( $sConfPass != $mValue )
+            return _t( '_Password confirmation failed' );
+        else
+            return true;
+    }
+    
+    function checkPostValueForRangeCorrect( $aItem, $mValue ) {
+        if( is_null($mValue[0]) or is_null($mValue[1]) )
+            return true; // if not set, pass this check
+        
+        if( $mValue[0] > $mValue[1] )
+            return _t( '_First value must be bigger' );
+        
+        return true;
+    }
+    
+    function checkPostValueForMin( $aItem, $mValue ) {
+        $iMin = $aItem['Min'];
+        if( is_null($iMin) )
+            return true;
+        
+        switch( $aItem['Type'] ) {
+            case 'text':
+            case 'area':
+                if( mb_strlen( $mValue ) < $iMin )
+                    return false;
+            break;
+            
+            case 'html_area' :
+                if( mb_strlen( strip_tags($mValue) ) < $iMin )
+                    return false;
+            break;
+
+            case 'pass':
+                if( mb_strlen( $mValue ) > 0 and mb_strlen( $mValue ) < $iMin )
+                    return false;
+            break;
+            
+            case 'num':
+                if( $mValue < $iMin )
+                    return false;
+            break;
+            
+            case 'date':
+                if( $this -> getAge($mValue) < $iMin )
+                    return false;
+            break;
+            
+            case 'range':
+                if( $mValue[0] < $iMin || $mValue[1] < $iMin )
+                    return false;
+            break;
+            
+            case 'select_set':
+                if( count( $mValue ) < $iMin )
+                    return false;
+            break;
+        }
+        
+        return true;
+    }
+    
+    function checkPostValueForMax( $aItem, $mValue ) {
+        $iMax = $aItem['Max'];
+        if( is_null($iMax) )
+            return true;
+        
+        switch( $aItem['Type'] ) {
+            case 'text':
+            case 'area':
+            case 'pass':
+                if( mb_strlen( $mValue ) > $iMax )
+                    return false;
+            break;
+            
+            case 'html_area':
+                if( mb_strlen( strip_tags($mValue) ) > $iMax )
+                    return false;
+            break;
+
+            case 'num':
+                if( $mValue > $iMax )
+                    return false;
+            break;
+            
+            case 'date':
+                if( $this -> getAge($mValue) > $iMax )
+                    return false;
+            break;
+            
+            case 'range':
+                if( $mValue[0] > $iMax || $mValue[1] > $iMax )
+                    return false;
+            break;
+            
+            case 'select_set':
+                if( count( $mValue ) > $iMax )
+                    return false;
+            break;
+        }
+        
+        return true;
+    }
+    
+    function checkPostValueForUnique( $aItem, $mValue, $iHuman, $iPageId ) {
+        global $logged;
+        
+        if( !$aItem['Unique'] )
+            return true;
+        
+        $iProfileID = (int)$iPageId;
+        if( $iProfileID ) {
+            $sAdd = "AND `id` != $iProfileID";
+        } else
+            $sAdd = '';
+        
+        $mValue_db = addslashes( $mValue );
+        $sQuery = "SELECT COUNT(*) FROM `ml_pages_main` WHERE `{$aItem['Name']}` = '$mValue_db' $sAdd";
+        if( (int)db_value( $sQuery ) )
+            return false;
+        
+        return true;
+    }
+    
+    function checkPostValueForCheck( $aItem, $mValue ) {
+        $sCheck = $aItem['Check'];
+        if( empty($sCheck) )
+            return true;
+        
+        $sFunc = create_function( '$arg0', $sCheck );
+        
+        if( !$sFunc( $mValue ) )
+            return false;
+        
+        return true;
+    }
+    
+
+    
+    function checkPostValueForValues( $aItem, $mValue ) {
+        if( empty($mValue) ) //it is not selected
+            return true;
+        
+        if( is_array( $aItem['Values'] ) )
+            $aValues = $aItem['Values'];
+        else
+            $aValues = $this -> getPredefinedKeysArr( $aItem['Values'] );
+        
+        if( !$aValues )
+            return 'Cannot find list';
+        
+        if( $aItem['Type'] == 'select_one' ) {
+           // if( !in_array( $mValue, $aValues ) )
+                //return 'Value not in list. Hack attempt!';
+        } elseif( $aItem['Type'] == 'select_set' ) {
+            foreach( $mValue as $sValue )
+                if( !in_array( $sValue, $aValues ) )
+                    return 'Value not in list. Hack attempt!';
+        }
+        
+        return true;
+    }
+
+    function getDefaultValues() {
+		$aItems = array();
+		if(empty($this -> aCache[100][0]['Items'])) return $aItems;
+		foreach($this -> aCache[100][0]['Items'] as $aItem)
+			if(!empty($aItem["Default"]))
+				$aItems[$aItem["Name"]] = $aItem["Default"];
+		return $aItems;
+    }
+    
+    function getPredefinedKeysArr( $sKey ) {
+        global $aPreValues;
+        
+        if( substr( $sKey, 0, 2 ) == $this->sLinkPref )
+            $sKey = substr( $sKey, 2 );
+        
+        return @array_keys( $aPreValues[$sKey] );
+    }
+    
+    function checkPostValueForSystem( $aItem, $mValue ) {
+        
+        switch( $aItem['Name'] ) {
+            case 'Captcha':
+                return ( $this -> checkCaptcha( $mValue ) ) ? true : _t( '_Captcha check failed' );
+            break;
+            
+            case 'Status':
+                if( !in_array($mValue, $aItem['Values'] ) )
+                    return 'Status hack attempt!';
+            break;
+            
+            case 'TermsOfUse':
+                if ((2 == getParam('ipBlacklistMode') && bx_is_ip_blocked()) || ('on' == getParam('sys_dnsbl_enable') && bx_is_ip_dns_blacklisted('', 'join')))
+                    return _t('_Sorry, your IP been banned');
+                else
+                    return $mValue ? true : _t( '_You must agree with terms of use' );
+            break;
+            
+            case 'thumb':                
+                if ($aItem['Mandatory'] && is_null($mValue))
+                    return _t( '_Please specify image file' );
+
+                if (( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) and $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' ))
+                    return true;                
+                
+                $sFileName = $GLOBALS['dir']['tmp'] . $mValue;
+                
+                if ($mValue && !file_exists($sFileName)) // hack attempt
+                    return 'No way! File not exists: ' . $sFileName;
+                
+                $aSize = @getimagesize($sFileName);
+                if ($mValue && !$aSize) {
+                    @unlink($sFileName);
+                    return _t( '_Please specify image file' );
+                }
+                
+                if ($mValue && $aSize[2] != IMAGETYPE_GIF && $aSize[2] != IMAGETYPE_JPEG && $aSize[2] != IMAGETYPE_PNG) {
+                    unlink($sFileName);
+                    return _t( '_Please specify image of JPEG, GIF or PNG format' );
+                }
+                
+                return true;
+            break;
+        }
+        
+        return true;
+    }
+    
+    function checkCaptcha( $mValue ) {
+    	bx_import('BxDolSession');
+		$oSession = BxDolSession::getInstance();
+		$mixedValue = $oSession->getValue('strSec');
+
+        return $mixedValue !== false && $mixedValue === md5($mValue);
+    }
+    
+    function getAge( $sBirthDate ) {
+        /*
+        // Old style 28/10/1985
+        $bd = explode( '/', $sBirthDate );
+        foreach ($bd as $i => $v) $bd[$i] = (int)$v;
+        
+        if ( date('n') > $bd[1] || ( date('n') == $bd[1] && date('j') >= $bd[0] ) )
+            $age = date('Y') - $bd[2];
+        else
+            $age = date('Y') - $bd[2] - 1;
+        */
+        
+        // New style 1985-10-28
+        $bd = explode( '-', $sBirthDate );
+        foreach ($bd as $i => $v) $bd[$i] = intval($v);
+        
+        if (intval(date('n')) > $bd[1] || (intval(date('n')) == $bd[1] && intval(date('j')) >= $bd[2]))
+            $age = intval(date('Y')) - $bd[0];
+        else
+            $age = intval(date('Y')) - $bd[0] - 1;
+        
+        return $age;
+    }
+    
+    // create intuitive array of values from default text profile array (getProfileInfo)
+    function getValuesFromPage( $aPage ) {
+        $aValues = array();
+        
+        foreach( $this -> aBlocks as $aBlock ) {
+            foreach( $aBlock['Items'] as $aItem ) {
+                $sItemName = $aItem['Name'];
+
+                if( !array_key_exists( $sItemName, $aPage ))
+                    continue; //pass this
+                
+                $mValue = $aPage[$sItemName];
+                
+                switch( $aItem['Type'] ) {
+                    case 'select_set':
+                        $mValue = explode( ',', $mValue );
+                    break;
+                    
+                    case 'range':
+                        $mValue = explode( ',', $mValue );
+                        foreach( $mValue as $iInd => $sValue )
+                            $mValue[$iInd] = (int)$sValue;
+                    break;
+                    
+                    case 'bool':
+                        $mValue = (bool)$mValue;
+                    break;
+                    
+                    case 'num':
+                        $mValue = (int)$mValue;
+                    break;
+                    
+                    case 'date':
+                        /*
+                        $aDate = explode( '-', $mValue ); //YYYY-MM-DD
+                        $mValue = (int)$aDate[2] . '/' . (int)$aDate[1] . '/' . $aDate[0];
+                        */
+                        
+                        //return $mValue;
+                    break;
+                    
+                    case 'system':
+                        switch( $sItemName ) {
+                            case 'Couple':
+                            case 'ID':                            
+                                $mValue = (int)$mValue;
+                            break;
+                            
+                            case 'Featured':
+                                $mValue = (bool)$mValue;
+                            break;
+                        }
+                    break;
+                }
+                
+                $aValues[$sItemName] = $mValue;
+            }
+        }
+        $aValues['Salt'] = $aPage['Salt']; // encryptUserPwd
+        
+        return $aValues;
+    }
+    
+    // reverse of previous function. convert intuitive array to text array
+    function getPageFromValues( $aValues ) {
+        $aPage = array();
+       // print_r($_FILES);
+        if( $this -> iAreaID == 1 ) {
+            $aBlocks = array();
+            foreach( array_keys( $this -> aArea ) as $iPage )
+                $aBlocks = array_merge( $aBlocks, $this -> aArea[ $iPage ] );
+        } else
+            $aBlocks = $this -> aBlocks;
+        
+        foreach( $aBlocks as $aBlock ) {
+            foreach( $aBlock['Items'] as $aItem ) {
+                $sItemName = $aItem['Name'];
+                /*if ($aValues[$sItemName])
+                	if ($aValues[$sItemName . '_photos'])
+                		$aPage[$sItemName . '_photos'] = $aValues[$sItemName . '_photos'];*/
+
+								if ($aItem['MediaType'] != 'none')
+									$aMedia[$aItem['MediaType']] = $sItemName;
+																	
+                if( !array_key_exists( $sItemName, $aValues ))
+                    continue; //pass this
+            
+                
+								$mValue = $aValues[$sItemName];
+								$aPage[$sItemName] = $mValue;
+
+                
+            }
+        }
+        return array( $aPage, $aMedia );
+    }
+    
+    //internal function
+    function _getCoupleMutualFields() {
+        $aAllItems = $this -> aCache[100][0]['Items'];
+        
+        $this -> aCoupleMutual = array( 'NickName', 'Password', 'Email' );
+        
+        foreach( $aAllItems as $aItem ) {
+            if( $aItem['Name'] == 'Couple' )
+                $this -> aCoupleMutual = array_merge( $this -> aCoupleMutual, explode( "\n", $aItem['Extra'] ) ); // add specified values
+            
+            if( $aItem['Type'] == 'system' )
+                $this -> aCoupleMutual[] = $aItem['Name'];
+            
+            if( $aItem['Type'] == 'pass' )
+                $this -> aCoupleMutual[] = $aItem['Name'] . '_confirm';
+        }
+        
+        //echoDbg( $this -> aCoupleMutual );
+    }
+    
+    //external function
+    function getCoupleMutualFields() {
+        return $this -> aCoupleMutual;
+    }
+    
+    function getViewableValue( $aItem, $sValue, $bPhotoFieldView = false ) {
+        global $site;
+        if (!$sValue) return '';
+        switch( $aItem['Type'] ) {
+            case 'text':
+            		if ($aItem['MediaType'] == 'editorlog' || $aItem['Name'] == 'author_id')
+            			return getNickName($sValue);
+            		elseif ($aItem['MediaType'] == 'datelog' || $aItem['Name'] == 'created')
+            			return date('Y-m-d H:m:s', (is_numeric($sValue) ? $sValue : strtotime($sValue)));      			
+            		if ($bPhotoFieldView || $aItem['MediaType'] == 'map')
+            		{
+									$aVarsUpload = array (   
+										'draggable' => 'false',
+										'Closest_matching_address' => _t('_ml_pages_closest_matching_address'),
+										'Current_position' => _t('_ml_pages_current_position'),
+										'default_address' => $sValue ? $sValue : 'New York',
+									);
+
+									return $this->_oMain->_oTemplate->parseHtmlByName('location_view', $aVarsUpload);
+            		}
+			          if ($aItem['Multiplyable'] && $aItem['MediaType'] == 'none' && $aItem['Attribute'] == 'none')
+		            {
+									$aValue = explode($this->_sDelimeter, $sValue);
+									$iCount = count($aValue);
+		            	foreach ($aValue as $sData)
+		            	{
+		                if ($aItem['IdField'] && $aItem['CaptionField'])
+		                	$sCaption = db_value("SELECT `{$aItem['CaptionField']}` FROM `{$aItem['Values']}` WHERE `{$aItem['IdField']}` = '{$sData}' LIMIT 1");
+		                	
+		            		if ($sCaption)
+		            			$sContent .= $iCount > 1 ? '<li style="margin-left:10px">' . $sCaption . '</li>' : $sCaption;
+		            	}
+		        			$sValue = $iCount > 1 ? "<ul style='{$sMultipleCss}'>{$sContent}</ul>" : $sContent;
+		            }
+                return nl2br(htmlspecialchars_adv($sValue));
+            case 'num':
+            case 'area':
+            		//if ($aItem['Multiplyable'] || $bPhotoFieldView)
+            		if ($aItem['Multiplyable'])
+            			return nl2br(($sValue));
+            		
+                return nl2br(htmlspecialchars_adv($sValue));
+            
+            case 'html_area':
+                return $sValue;
+
+            case 'date':
+            		return $sValue;
+               // return $this -> getViewableDate( $sValue );
+                
+            case 'range':
+                return htmlspecialchars_adv( str_replace( ',', ' - ',$sValue ) );
+            
+            case 'bool':
+                return _t( $sValue ? '_Yes' : '_No' );
+            
+            case 'select_one':
+            	if ($aItem['Multiplyable'] && $aItem['Attribute'] == 'none')
+            			$sValueView = $sValue;
+		          elseif ($aItem['Attribute'] != 'none')
+		          {
+								$aValue = explode($this->_sDelimeter, $sValue);
+								$iCount = count($aValue);
+		          	foreach ($aValue as $sData)
+		          	{
+		              if ($aItem['IdField'] && $aItem['CaptionField'])
+		              	$sContent = db_value("SELECT `{$aItem['CaptionField']}` FROM `{$aItem['Values']}` WHERE `{$aItem['IdField']}` = '{$sData}' LIMIT 1");
+		              else	
+		          			$sContent = $this -> getViewableSelectOne( $aItem['Values'], $sData, '', $aItem );
+		          		
+		          		if ($sContent)
+		          			$sValueView .= $iCount > 1 ? '<li style="margin-left:10px">' . $sContent . '</li>' : $sContent;
+		          	}
+		      			$sValueView = "{$sValueView}";
+		          }
+            		else
+            		{
+                	$sValueView = $this -> getViewableSelectOne( $aItem['Values'], $sValue, '', $aItem );
+                	$sValueView = $sValueView == '--Select One--' ? '' : $sValueView;
+                }
+                
+                if ($aItem['Name'] == 'Country') {
+                    $sFlagName = strtolower($sValue);
+                    $sValueView = '<img src="' . $site['flags']  . $sFlagName . '.gif" /> ' . $sValueView;
+                }
+                if ($aItem['Link'])
+                {
+	               $aUrl = parse_url($sValue);
+	               $sHttp = $aUrl['scheme'] == 'http' ? '' : 'http://';
+                 $sValueView = '<a target="_blank" href="' . $sHttp .$sValueView.'">' . nl2br(htmlspecialchars_adv($sValueView)) . '</a>';
+                }
+
+                
+                return $sValueView;
+                
+            case 'select_set':
+                return $this -> getViewableSelectSet( $aItem['Values'], $sValue );
+            
+            
+            case 'system':
+                switch( $aItem['Name'] ) {
+                    case 'Age':
+                        return age($sValue);
+                    
+                    case 'Date':
+                    case 'DateLastEdit':
+                    case 'DateLastLogin':
+                        return $this -> getViewableDate( $sValue );
+                        
+                    case 'Status':
+                        return _t( "_$sValue" );
+                    
+                    case 'ID':
+                        return $sValue;
+                    
+                    case 'Featured':
+                        return _t( $sValue ? '_Yes' : '_No' );
+                    
+                    default:
+                        return '&nbsp;';
+                }
+            break;
+            
+            case 'pass':
+            default:
+                return '&nbsp;';
+        }
+    }
+    
+    function getViewableDate( $sDate ) {
+        return $sDate;
+    }
+    
+    function getViewableSelectOne( $mValues, $sValue, $sUseLKey = 'LKey', $aItem = array() ) {
+        global $aPreValues;
+        
+        if( is_string($mValues) and substr($mValues, 0, 2) == $this->sLinkPref ) {
+
+            $sKey = substr($mValues, 2);
+
+            if( !isset( $aPreValues[$sKey][$sUseLKey] ) )
+                $sUseLKey = 'LKey';
+					if ($aPreValues[$sKey][$sValue][$sUseLKey])
+            return htmlspecialchars_adv( _t( $aPreValues[$sKey][$sValue][$sUseLKey] ) );
+           else
+           	return $sValue;
+        } elseif(db_value("SHOW TABLES LIKE '{$mValues[0]}'") && $mValues[0] != 'ml_pages_fields') {
+        	if ($mValues[0] == 'sys_categories' && $sValue)
+        		return $sValue;
+        	elseif ($aItem['IdField'] && $aItem['CaptionField'] && $sValue)
+        			return db_value("SELECT `{$aItem['CaptionField']}` FROM `{$mValues[0]}` WHERE `{$aItem['IdField']}` = '{$sValue}' LIMIT 1");
+        } elseif( is_array($mValues) ) {
+            if( in_array($sValue, $mValues) )
+                return htmlspecialchars_adv( _t( "_FieldValues_{$sValue}" ) );
+                //return htmlspecialchars_adv( _t( "_$sValue" ) );
+            else
+                return '';
+        } else
+            return '';
+    }
+    
+    function getViewableSelectSet( $mValues, $sValue, $sUseLKey = 'LKey' ) {
+        global $aPreValues;
+        
+        if( is_string($mValues) and substr($mValues, 0, 2) == $this->sLinkPref ) {
+            $sKey = substr($mValues, 2);
+            if( !isset( $aPreValues[$sKey] ) )
+                return '&nbsp;';
+            
+            $aValues = explode( ',', $sValue );
+            
+            $aTValues = array();
+            
+            foreach( $aValues as $sValue )
+                $aTValues[] = _t( $aPreValues[$sKey][$sValue][$sUseLKey] );
+            
+            return htmlspecialchars_adv( implode( ', ', $aTValues ) );
+        } elseif( is_array($mValues) ) {
+            $aValues = array();
+            foreach( explode( ',', $sValue ) as $sValueOne )
+                $aValues[] = _t( "_FieldValues_{$sValueOne}" );
+                //$aValues[] = _t( "_$sValueOne" );
+            
+            return htmlspecialchars_adv( implode( ', ', $aValues ) );
+        } else
+            return '';
+    }
+    
+    function collectSearchRequestParams() {
+        $aParams = array();
+        
+        if( empty($_GET) and empty($_POST) )
+            return $aParams;
+        
+        foreach( $this -> aBlocks as $aBlock ) {
+            foreach( $aBlock['Items'] as $aItem ) {
+                $sItemName = $aItem['Name'];
+                $mValue = null;
+                
+                switch( $aItem['Type'] ) {
+                    case 'text':
+                    case 'area':
+                    case 'html_area':
+                        if( isset( $_REQUEST[$sItemName] ) and $_REQUEST[$sItemName] )
+                            $mValue = process_pass_data( $_REQUEST[$sItemName] );
+                    break;
+                    
+                    case 'num':
+                    case 'date':
+                    case 'range':
+                        if( isset( $_REQUEST[$sItemName] ) and !empty( $_REQUEST[$sItemName] ) ) {
+                            $mValue = explode('-', $_REQUEST[$sItemName], 2);
+                            
+                            $mValue[0] = (int)$mValue[0];
+                            $mValue[1] = (int)$mValue[1];
+                            
+                            if( !$mValue[0] and !$mValue[1] )
+                                $mValue = null; // if no values entered, skip them
+                        }
+                    break;
+                    
+                    case 'select_one':
+                    case 'select_set':
+                        if( isset( $_REQUEST[$sItemName] ) and !empty( $_REQUEST[$sItemName] ) ) {
+                            if (is_array( $_REQUEST[$sItemName] )) {
+                                $mValue = array();
+                                
+                                foreach( $_REQUEST[$sItemName] as $sValue ) {
+                                    $sValue = trim( process_pass_data( $sValue ) );
+                                    if( $sValue )
+                                        $mValue[] = $sValue;
+                                }
+                            } else {
+                                $mValue = trim( process_pass_data( $_REQUEST[$sItemName] ) );
+                            }
+                        }
+                        if (!$mValue)
+                            $mValue = null;
+                    break;
+                    
+                    case 'bool':
+                        if( isset( $_REQUEST[$sItemName] ) and $_REQUEST[$sItemName] )
+                            $mValue = true;
+                    break;
+                    
+                    case 'system':
+                        switch( $sItemName ) {
+                            case 'ID':
+                                if( isset( $_REQUEST[$sItemName] ) and (int)$_REQUEST[$sItemName] )
+                                    $mValue = (int)$_REQUEST[$sItemName];
+                            break;
+                            
+                            case 'Couple':
+                                if( isset( $_REQUEST[$sItemName] ) and is_array( $_REQUEST[$sItemName] ) ) {
+                                    if( isset( $_REQUEST[$sItemName][0] ) and isset( $_REQUEST[$sItemName][1] ) )
+                                        $mValue = '-1'; //pass
+                                    elseif( isset( $_REQUEST[$sItemName][0] ) )
+                                        $mValue = 0;
+                                    elseif( isset( $_REQUEST[$sItemName][1] ) )
+                                        $mValue = 1;
+                                } elseif( isset( $_REQUEST[$sItemName] ) ) {
+                                    $mValue = 'yes' == $_REQUEST[$sItemName] ? 1 : 0;
+                                }
+                            break;
+                            
+                            case 'Location':
+                                
+                            break;
+                            
+                            case 'Keyword':
+                                if( isset( $_REQUEST[$sItemName] ) and trim( $_REQUEST[$sItemName] ) )
+                                    $mValue = trim( process_pass_data( $_REQUEST[$sItemName] ) );
+                            break;
+                            
+                        }
+                    break;
+                }
+                
+                if( !is_null( $mValue ) )
+                    $aParams[ $sItemName ] = $mValue;
+            }
+        }
+        
+        return $aParams;
+    }
+    
+    function getProfilesMatch( $aProf1, $aProf2 ) {
+        if( !$this -> aArea )
+            return 0;
+        
+        $aFields1 = $this -> aBlocks[0]['Items'];
+        $aFields2 = $this -> aCache[100][0]['Items'];
+        
+        $iMyPercent = 0;
+        $iTotalPercent = 0;
+        foreach( $aFields1 as $aField1 ) {
+            $aField2 = $aFields2[ $aField1['MatchField'] ];
+            if( !$aField2 )
+                continue;
+            
+            $iTotalPercent += $aField1['MatchPercent'];
+            
+            $sVal1 = $aProf1[ $aField1['Name'] ];
+            $sVal2 = $aProf2[ $aField2['Name'] ];
+            
+            if( !strlen($sVal1) or !strlen($sVal2) )
+                continue;
+            
+            $iAddPart = 0;
+            switch( "{$aField1['Type']} {$aField1['Type']}" ) {
+                case 'select_set select_one':
+                    $aVal1 = explode( ',', $sVal1 );
+                    
+                    if( in_array( $sVal2, $aVal1 ) )
+                        $iAddPart = 1;
+                break;
+                
+                case 'select_one select_set':
+                    $aVal2 = explode( ',', $sVal2 );
+                    
+                    if( in_array( $sVal1, $aVal2 ) )
+                        $iAddPart = 1;
+                break;
+                
+                case 'select_set select_set':
+                    $aVal1 = explode( ',', $sVal1 );
+                    $aVal2 = explode( ',', $sVal2 );
+                    
+                    $iFound = 0;
+                    foreach( $aVal1 as $sTempVal1 ) {
+                        if( in_array( $sTempVal1, $aVal2 ) )
+                            $iFound ++;
+                    }
+                    
+                    $iAddPart = $iFound / count( $aVal1 );
+                break;
+                
+                case 'range num':
+                    $aVal1 = explode( ',', $sVal1 );
+                    $sVal2 = (int)$sVal2;
+                    
+                    if( (int)$aVal1[0] <= $sVal2 and $sVal2 <= (int)$aVal1[0] )
+                        $iAddPart = 1;
+                break;
+                
+                case 'range date':
+                    $aVal1 = explode( ',', $sVal1 );
+                    
+                    $aDate = explode( '-', $sVal2 );
+                    $sVal2 = sprintf( '%d/%d/%d', $aDate[2], $aDate[1], $aDate[0] );
+                    $sAge = $this -> getAge( $sVal2 );
+                    
+                    if( (int)$aVal1[0] <= $sVal2 and $sVal2 <= (int)$aVal1[0] )
+                        $iAddPart = 1;
+                break;
+                
+                default:
+                    if( $sVal1 == $sVal2 )
+                        $iAddPart = 1;
+            }
+            
+            $iMyPercent    += round( $aField1['MatchPercent'] * $iAddPart );
+        }
+        
+        if( $iTotalPercent != 100 && $iTotalPercent != 0 )
+            $iMyPercent = (int)( ( $iMyPercent / $iTotalPercent ) * 100 );
+        
+        return $iMyPercent;
+    }
+    
+    function getFormCode($aParams = null) {
+    		//if (!$this->sCategory) return MsgBox(_t('_ml_page_creator_create_page_select_category'));
+        switch ($this->iAreaID) {
+            // join
+            case 1:
+                $aForm = $this->getFormJoin($aParams);
+            break;
+            
+            // edit
+            case 2:
+            case 3:
+            case 4:
+                $aForm = $this->getFormEdit($aParams);
+            break;
+            
+            // search
+            case 9:
+            case 10:
+            case 11:
+                return $this->getFormsSearch($aParams);
+            break;
+            
+            default:
+                return false;
+        }
+
+        $oForm = new BxTemplFormView($aForm);
+
+		bx_import('BxDolAlerts');
+		$sCustomHtmlBefore = '';
+		$sCustomHtmlAfter = '';
+		$oAlert = new BxDolAlerts('profile', 'show_profile_form', 0, 0, array('oProfileFields' => $this, 'oForm' => $oForm, 'sCustomHtmlBefore' => &$sCustomHtmlBefore, 'sCustomHtmlAfter' => &$sCustomHtmlAfter));
+		$oAlert->alert();
+
+        return $sCustomHtmlBefore . $oForm->getCode() . $sCustomHtmlAfter;
+    }
+    
+
+    /**
+     * Generate form for join
+     *
+     */
+    function getFormJoin($aParams) {
+        // get parameters
+        $bCoupleEnabled = $aParams['couple_enabled'];
+        $bCouple        = $aParams['couple'];
+        $aHiddenItems   = $aParams['hiddens'];
+        $iPage          = $aParams['page'];
+        
+        $aValues        = $aParams['values'];
+        $aErrors        = $aParams['errors'];
+
+        // collect inputs
+        $aInputs = array();
+        //print_r($aHiddenItems);
+        // convert array of hidden fields to inputs
+        foreach ($aHiddenItems as $sName => $sValue) {
+            $aInputs[] = array(
+                'type'  => 'hidden',
+                'name'  => $sName,
+                'value' => $sValue,
+            );
+        }
+
+        $aInputs[] = array(
+            'type'  => 'hidden',
+            'name'  => 'main_category',
+            'value' => $this->sMainCategory,
+        );        
+         $aInputs[] = array(
+            'type'  => 'hidden',
+            'name'  => 'sub_category',
+            'value' => $this->sSubCategory,
+        );
+            
+        // add every block on this page
+        foreach( $this->aArea[$iPage] as $aBlock ) {
+        		if (!$aBlock['Categories'] || !$this->sSubCategory) continue;
+        		$aCategories = explode(',', $aBlock['Categories']);
+        		if (!in_array($this->sSubCategory, $aCategories)) continue;
+            // generate block header
+            $aInputs[] = array(
+                'type' => 'block_header',
+                'caption' => _t( $aBlock['Caption'] ),
+            );
+            
+            $aAddInputs = array();
+           
+            // add every item
+            foreach( $aBlock['Items'] as $aItem ) {
+            		if (!$aItem['Categories']) continue;
+		        		$aCategories = explode(',', $aItem['Categories']);
+		        		if (!in_array($this->sSubCategory, $aCategories)) continue;		       		
+                $aInputParams = array(
+                    'values'         => array(
+                        0 => isset($aValues[0][$aItem['Name']]) ? $aValues[0][$aItem['Name']] : null,
+                        1 => isset($aValues[1][$aItem['Name']]) ? $aValues[1][$aItem['Name']] : null,
+                    ),
+                    'errors'         => array(
+                        0 => isset($aErrors[0][$aItem['Name']]) ? $aErrors[0][$aItem['Name']] : null,
+                        1 => isset($aErrors[1][$aItem['Name']]) ? $aErrors[1][$aItem['Name']] : null,
+                    ),
+                );
+
+                $aInputs[] = $this->convertJoinField2Input($aItem, $aInputParams, 0);
+            }
+        }
+        
+        // add submit button
+        $aInputs[] = array(
+            'type' => 'submit',
+            'name' => 'do_submit',
+            'value' => _t( '_ml_pages_create_now' ),
+            'colspan' => false,
+        );
+        
+        // generate form array
+        $aForm = array(
+            'form_attrs' => array(
+                'name'     => 'join_form',
+                'action'   => BX_DOL_URL_ROOT . 'modules/modloaded/pages/create.php',
+                'method'   => 'post',
+                'onsubmit' => 'return validateJoinForm(this);',
+                'enctype'  => 'multipart/form-data',
+            ),
+            'table_attrs' => array(
+                'id' => 'join_form_table'
+            ),
+            'params' => array(
+                'double'         => $bCoupleEnabled,
+                'second_enabled' => $bCouple
+            ),
+            'inputs' => empty($aInputParams) ? array() : $aInputs,
+        );
+        //print_r($aForm);
+        return $aForm;
+    }
+    
+    /**
+     * Generate form for edit
+     *
+     */
+    function getFormEdit($aParams) {
+        // get parameters
+        $bCoupleEnabled = $aParams['couple_enabled'];
+        $bCouple        = $aParams['couple'];
+        $aHiddenItems   = $aParams['hiddens'];
+        
+        $iPageId     		= $aParams['page_id'];
+        $aValues        = $aParams['values'];
+        $aErrors        = $aParams['errors'];
+        // collect inputs
+        $aInputs = array();
+        
+        // convert array of hidden fields to inputs
+        foreach ($aHiddenItems as $sName => $sValue) {
+            $aInputs[] = array(
+                'type'  => 'hidden',
+                'name'  => $sName,
+                'value' => $sValue,
+            );
+        }
+
+        $aInputs[] = array(
+            'type'  => 'hidden',
+            'name'  => 'main_category',
+            'value' => $this->sMainCategory,
+        );        
+         $aInputs[] = array(
+            'type'  => 'hidden',
+            'name'  => 'sub_category',
+            'value' => $this->sSubCategory,
+        );    
+        // add every block on this page
+        foreach( $this->aBlocks as $aBlock ) {
+        		if (!$aBlock['Categories'] || !$this->sSubCategory) continue;
+        		$aCategories = explode(',', $aBlock['Categories']);
+        		if (!in_array($this->sSubCategory, $aCategories)) continue;
+            // generate block header
+            $aInputs[] = array(
+                'type' => 'block_header',
+                'caption' => _t( $aBlock['Caption'] ),
+            );
+            $aAddInputs = array();
+            // add every item
+            foreach( $aBlock['Items'] as $aItem ) {
+            		if (!$aItem['Categories'] || !$this->sSubCategory) continue;
+		         		$aCategories = explode(',', $aItem['Categories']);
+		        		if (!in_array($this->sSubCategory, $aCategories)) continue;          
+                $aInputParams = array(
+                    'values'         => array(
+                        0 => isset($aValues[0][$aItem['Name']]) ? $aValues[0][$aItem['Name']] : null,
+                        1 => isset($aValues[1][$aItem['Name']]) ? $aValues[1][$aItem['Name']] : null,
+                    ),
+                    'errors'         => array(
+                        0 => isset($aErrors[0][$aItem['Name']]) ? $aErrors[0][$aItem['Name']] : null,
+                        1 => isset($aErrors[1][$aItem['Name']]) ? $aErrors[1][$aItem['Name']] : null,
+                    ),
+                    'page_id' => $iPageId,
+                );
+                
+                $aInputs[] = $this->convertEditField2Input($aItem, $aInputParams, 0);
+
+            }
+            
+
+        }
+        
+        // add submit button
+        $aInputs[] = array(
+            'type' => 'submit',
+            'name' => 'do_save',
+            'value' => _t( '_Save' ),
+            'colspan' => false,
+        );
+        
+        
+        // generate form array
+        $aForm = array(
+            'form_attrs' => array(
+                'name'     => 'edit_form',
+               // 'action'   => BX_DOL_URL_ROOT . 'modules/boonex/wells/edit.php?page_id=' . $iPageId,
+                'method'   => 'post',
+                'enctype'  => 'multipart/form-data',
+                'onsubmit' => 'return validateJoinForm(this);',
+            ),
+            'table_attrs' => array(
+                'id' => 'edit_form_table'
+            ),
+            'params' => array(
+                'second_enabled' => $bCouple
+            ),
+            'inputs' => empty($aInputParams) ? array() : $aInputs,
+        );
+        return $aForm;
+    }
+    
+    function convertEditField2Input($aItem, $aParams, $iPerson) {
+        
+        $bCouple        = $aParams['couple'];
+        $aValues        = $aParams['values'];
+        $aErrors        = $aParams['errors'];
+        $iPageId     = $aParams['page_id'];
+				if (!$iPageId)
+					return;
+        $aCustomMediaTemplates = $this->generateCustomMediaTemplates($this->_iProfileId, $iPageId, db_value("SELECT `thumb` FROM `ml_pages_main` WHERE `id` = {$iPageId} LIMIT 1"), $aItem['Name']);
+        $aCustomYouTubeTemplates = $this->generateCustomYouTubeTemplates($this->_iProfileId, $iPageId, $aItem['Name']);
+        $aCustomRssTemplates = $this->generateCustomRssTemplate ($this->_iProfileId, $iPageId, $aItem['Name']);
+            
+        $aInput = array();
+        switch ($aItem['Type']) {
+            case 'text':  
+            	$aInput['type'] = 'text';     
+            	$aInput['value'] = $aValues[$iPerson]; 
+            	if ($aItem['MediaType'] != 'none')
+            	{
+            		$aInput['type'] = 'custom';
+            		switch ($aItem['MediaType']) {
+            			case 'photo':
+            				$aInput['content'] = ($aCustomMediaTemplates['photos']['thumb_choice'] ? $aCustomMediaTemplates['photos']['thumb_choice'] . '<br>' . $aCustomMediaTemplates['photos']['choice'] . '<br>' : '') . $aCustomMediaTemplates['photos']['upload'];
+            			break;
+            			case 'video':
+            				$aInput['content'] = ($aCustomMediaTemplates['videos']['choice'] ? $aCustomMediaTemplates['videos']['choice'] . '<br>' : '') . $aCustomMediaTemplates['videos']['upload'];
+            			break;
+            			case 'sound':
+            				$aInput['content'] = ($aCustomMediaTemplates['sounds']['choice'] ? $aCustomMediaTemplates['sounds']['choice'] . '<br>' : '') . $aCustomMediaTemplates['sounds']['upload'];
+            			break;
+            			case 'file':
+            				$aInput['content'] = ($aCustomMediaTemplates['files']['choice'] ? $aCustomMediaTemplates['files']['choice'] . '<br>' : '') . $aCustomMediaTemplates['files']['upload'];
+            			break;
+            			case 'rss':
+            				$aInput['content'] = ($aCustomRssTemplates['choice'] ? $aCustomRssTemplates['choice'] . '<br>' : '') . $aCustomRssTemplates['upload'];
+            			break;
+            			case 'youtube':
+            				$aInput['content'] = ($aCustomYouTubeTemplates['choice'] ? $aCustomYouTubeTemplates['choice'] . '<br>'  : '') . $aCustomYouTubeTemplates['upload'];
+            			break;
+            			case 'editorlog':
+            				$aInput['type'] = 'hidden';
+            				$aInput['value'] = getLoggedId();
+            			break;
+            			case 'datelog':
+            				$aInput['type'] = 'hidden';
+            				$aInput['value'] = time();
+            			break;
+            		}
+            	}
+
+            break;
+            //case 'text':  $aInput['type'] = 'text';     $aInput['value'] = $aValues[$iPerson]; break;
+            case 'area':  $aInput['type'] = 'textarea'; $aInput['value'] = $aValues[$iPerson]; $aInput['attrs']['counter'] = 'true'; break;
+            case 'html_area':  $aInput['type'] = 'textarea'; $aInput['html'] = 2; $aInput['value'] = $aValues[$iPerson]; $aInput['attrs']['counter'] = 'true'; break;
+            case 'date':     $aInput['type'] = $aItem['WithTime'] ? 'datetime' : 'date';   $aInput['infodisplay']= 'filterDate';     $aInput['value'] = $aValues[$iPerson]; break;
+            case 'datetime': $aInput['type'] = 'datetime'; $aInput['value'] = $aValues[$iPerson]; break;
+            case 'num':   $aInput['type'] = 'number';   $aInput['value'] = $aValues[$iPerson]; break;
+            case 'range': $aInput['type'] = 'doublerange';    $aInput['value'] = $aValues[$iPerson]; break;
+            case 'pass':  $aInput['type'] = 'password'; break;
+            case 'bool':
+                $aInput['type']    = 'checkbox';
+                $aInput['value']   = 'yes';
+                $aInput['checked'] = (bool)(int)$aValues[$iPerson];
+            break;
+            
+            case 'select_one':
+                switch ($aItem['Control']) {
+                    case 'select': $aInput['type'] = 'select';    break;
+                    case 'radio':  $aInput['type'] = 'radio_set'; break;
+                    
+                    default: return false;
+                }
+                $aInput['value'] = $aValues[$iPerson] ? $aValues[$iPerson] : $aItem['Default'];
+                $aNewValues = $this->convertValues4Input($aItem['Values'], $aItem['UseLKey'], $aItem['Name'], $aItem, ($aItem['Default'] ? $aItem['Default'] : $aValues[$iPerson]));
+                $aInput['attrs'] = $aValues['attrs'] ? $aValues['attrs'] : '';
+                $aInput['values'] = $aNewValues['values'] ? $aNewValues['values'] : $aNewValues;
+                
+            break;
+            
+            case 'select_set':
+                switch ($aItem['Control']) {
+                    case 'select':   $aInput['type'] = 'select_multiple'; break;
+                    case 'checkbox': $aInput['type'] = 'checkbox_set';    break;
+                    
+                    default: return false;
+                }
+                
+                $aInput['values'] = $this->convertValues4Input($aItem['Values'], $aItem['UseLKey'], $aItem['Name'], $aItem, $aInput['value']);
+                
+                $aInput['value'] = $aValues[$iPerson];
+            break;
+            case 'photo':
+            		$aInput['type'] = 'file';
+            		$aInput['value'] = $aValues[$iPerson];
+            break;            
+            
+            case 'system':
+                switch ($aItem['Name']) {                	
+                    case 'Featured':
+                        $aInput = array(
+                            'type' => 'checkbox',
+                            'value' => 'yes',
+                            'checked' => $aValues[0]
+                        );
+                    break;
+                    
+                    case 'Status':
+                        $aInput = array(
+                            'type' => 'select',
+                            'value' => $aValues[0],
+                            'values' => array(),
+                        );
+                        
+                        foreach ($aItem['Values'] as $sValue) {
+                            $aInput['values'][$sValue] = _t("_FieldValues_$sValue");
+                        }
+                    break;
+                    
+                    case 'Membership':
+                        $aMemberships    = getMemberships();
+                        $aMembershipInfo = getMemberMembershipInfo($iProfileID);
+                        
+                        $aInput = array(
+                            'type' => 'custom',
+                            'content' => $this->getInputMembership( $aMemberships, $aMembershipInfo ),
+                        );
+                    break;
+                    
+                    case 'ID':
+                    case 'Date':
+                    case 'DateLastEdit':
+                    case 'DateLastLogin':
+                        //non editable
+                        return false; 
+                    break;
+                    
+                    default: return false;
+                }
+            break;
+            
+            default: return false;
+        }
+        
+        $aInput['name']     = ( $aItem['Type'] == 'system' ) ? $aItem['Name'] : ( $aItem['Name'] . "[$iPerson]" );
+        $aInput['caption']  = _t( $aItem['Caption'] );
+        $aInput['required'] = $aItem['Type'] == 'pass' ? false : $aItem['Mandatory'];
+        $aInput['info']     = (
+            ($sInfo = _t( $aItem['Desc'], $aItem['Min'], $aItem['Max'] )) != $aItem['Desc']) // if info is translated
+            ? $sInfo : null;
+       
+        if ($aItem['Type'] == 'date') {
+            $aInput['attrs']['min'] = $aItem['Max'] ? (date('Y') - $aItem['Max']) . '-' . date('m') . '-' . date('d') : (date('Y') - 100) . '-' . date('m') . '-' . date('d');
+            $aInput['attrs']['max'] = $aItem['Min'] ? (date('Y') - $aItem['Min']) . '-' . date('m') . '-' . date('d') : (date('Y') + 100) . '-' . date('m') . '-' . date('d');
+        } else {
+            $aInput['attrs']['min'] = $aItem['Min'];
+            $aInput['attrs']['max'] = $aItem['Max'];
+        } 
+        
+        $aInput['error']    = $aErrors[$iPerson];
+        if ($aItem['WithPhoto'] || $aItem['MediaType'] == 'map')
+        {
+					$aVarsUpload = array (   
+						'display_form' => 'visible',
+						'input_name' => $aItem['Name'],
+						'form_submit' => _t('_ml_pages_form_save'),
+						'draggable' => 'true',
+						'form_find' => _t('_ml_pages_form_find'),
+						'Closest_matching_address' => _t('_ml_pages_matching_address'),
+						'Current_position' => _t('_ml_pages_position'),
+						'default_address' => $aInput['value'] ? $aInput['value'] : 'New York',
+					);
+         
+					$aInput['type'] = 'custom';
+					$aInput['content'] = $this->_oMain->_oTemplate->parseHtmlByName('location', $aVarsUpload);
+        }
+        if ($aItem['Multiplyable'] && $aItem['MediaType'] == 'none')
+        {
+        	//$aInput['value'] = $aItem['WithPhoto'] ? array() : explode(getParam('ml_pages_multi_divider'), $aInput['value']);
+        	$aInput['value'] = explode($this->_sDelimeter, $aInput['value']);
+        	$aInput['name'] = $aItem['Name'] . '[]';
+        	$aInput['attrs']['multiplyable'] = 'true';
+        }
+        if ($aItem['Attribute'] == 'addon')
+        {
+        	$aInput['type'] = 'select_box';
+          $aInput['name'] = $aItem['Name'];
+          $aInput['value'] = explode($this->_sDelimeter, $aInput['value']);
+        }
+        //elseif ($aItem['WithPhoto'])
+        	//$aInput['value'] = '';
+        	             
+        if ($iPerson == 1) {
+            $aInput['tr_attrs'] = array(
+                'class' => 'hidable',
+                'style' => 'display: ' . ($bCouple ? 'table-row' : 'none'),
+            );
+            
+        }
+        
+        return $aInput;
+    }
+    
+    function getInputMembership ( $aMemberships, $aCurMship ) {
+        $sCurMship = $aCurMship['Name'];
+        if ( $aCurMship['ID'] != MEMBERSHIP_ID_STANDARD ) {
+            if ( !isset( $aCurMship['DateExpires'] ) )
+                $sCurMship .= ', ' . _t( '_MEMBERSHIP_EXPIRES_NEVER' );
+            else {
+                $iDaysLeft = round( ($aCurMship['DateExpires'] - time()) / (24 * 3600) );
+                $sCurMship .= ', '. _t( '_MEMBERSHIP_EXPIRES_IN_DAYS', $iDaysLeft );
+            }
+        }
+        
+        $iMembershipStd  = MEMBERSHIP_ID_STANDARD;
+        $_tSetMembership = _t('_Set membership');
+        $_tFor           = _t('_for');
+        $_tDays          = _t('_days');
+        $_tStartsNow     = _t('_starts immediately');
+        $_tCancel        = _t( '_Cancel' );
+        //_t('_Current membership')
+        
+        $sCode .= <<<BLAH
+            <script type="text/javascript">
+                function checkStandard() {
+                    selectMembership = document.getElementById('MembershipID');
+                    if(selectMembership.value == $iMembershipStd) {
+                        document.getElementById('MembershipDays').disabled = true;
+                        document.getElementById('MembershipImmediately').disabled = true;
+                    } else {
+                        document.getElementById('MembershipDays').disabled = false;
+                        document.getElementById('MembershipImmediately').disabled = false;
+                    }
+                }
+                
+                function ShowHideMshipForm( bShow ) {
+                    if( bShow ) {
+                        $('#current_membership').hide(400);
+                        $('#set_membership'    ).show(400);
+                        $('#doSetMembership'   ).val( 'yes' );
+                    } else {
+                        $('#current_membership').show(400);
+                        $('#set_membership'    ).hide(400);
+                        $('#doSetMembership'   ).val( '' );
+                    }
+                }
+            </script>
+                
+            <div id="current_membership">
+                $sCurMship
+                <br />
+                <div class="button_wrapper">
+                    <input type="button" value="$_tSetMembership" class="form_input_submit" onclick="ShowHideMshipForm( true )" />
+                    <div class="button_wrapper_close"></div>
+                </div>
+            </div>
+BLAH;
+        
+        $sCode .= <<<BLAH
+            <div id="set_membership" style="display: none;">
+                <input type="hidden" id="doSetMembership" name="doSetMembership" value="" />
+                
+                <select id="MembershipID" name="MembershipID" onchange="checkStandard()" class="select_set_membership">
+BLAH;
+
+        $sUnlimitedC = process_line_output(_t('_pfm_unlimited'));
+
+        foreach ( $aMemberships as $iMembershipID => $sMembershipName ) {
+            if ( $iMembershipID == MEMBERSHIP_ID_NON_MEMBER )
+                continue;
+            
+            $sCode .= <<<BLAH
+                    <option value="$iMembershipID">$sMembershipName</option>
+BLAH;
+        }
+
+        $sCode .= <<<BLAH
+                </select>
+        
+        $_tFor
+                <input disabled="disabled" id="MembershipDays" type="text" class="no" name="MembershipDays" value="{$sUnlimitedC}"
+                  onfocus="if (MembershipDays.value == '{$sUnlimitedC}') MembershipDays.value = ''"
+                  onblur=" if (MembershipDays.value == ''         ) MembershipDays.value = '{$sUnlimitedC}'" />
+                $_tDays
+            
+                <br />
+                <input disabled="disabled" id="MembershipImmediately" type="checkbox" name="MembershipImmediately" style="vertical-align: middle;" />
+                <label for="MembershipImmediately">
+                    $_tStartsNow
+                </label>
+            
+                <br />
+                <input type="button" onclick="ShowHideMshipForm( false );" value="$_tCancel" />
+            </div>
+BLAH;
+        return $sCode;
+    }
+    function getEntryByIdAndOwner ($iId, $iOwner, $isAdmin) {
+        $sWhere = '';
+        if (!$isAdmin) 
+            $sWhere = " AND `author_id` = '$iOwner' ";
+        return $GLOBALS['MySQL']->getRow ("SELECT * FROM `ml_pages_main` WHERE `id` = $iId $sWhere LIMIT 1");
+    }
+    
+    function _getFilesInEntry ($sModuleName, $sServiceMethod, $sFieldName, $sMediaType, $iIdProfile, $iEntryId)
+    {             
+			 	if (!db_value("SHOW TABLES LIKE 'ml_pages_{$sMediaType}'"))
+			 		return;		
+        $aReadyMedia = array ();
+        if ($iEntryId)
+        		$aReadyMedia = $GLOBALS['MySQL']->getPairs ("SELECT `media_id` FROM `ml_pages_{$sMediaType}` WHERE `entry_id` = '$iEntryId'", 'media_id', 'media_id');
+        
+        if (!$aReadyMedia)
+            return array();
+            
+				$aDataEntry = $this->getEntryByIdAndOwner ($this->_iProfileId, 0, true);  
+
+        $aFiles = array ();
+        foreach ($aReadyMedia as $iMediaId)
+        {
+            switch ($sModuleName) {
+            case 'photos':
+                $aRow = BxDolService::call($sModuleName, $sServiceMethod, array($iMediaId, 'icon'), 'Search');
+                break;
+            case 'sounds':
+                $aRow = BxDolService::call($sModuleName, $sServiceMethod, array($iMediaId, 'browse'), 'Search');
+                break;
+            default:
+                $aRow = BxDolService::call($sModuleName, $sServiceMethod, array($iMediaId), 'Search');
+            }
+            
+						   
+            if (!$this->_oMain->isEntryAdmin($aDataEntry, $iIdProfile) && $aRow['owner'] != $iIdProfile)
+                continue;
+
+            $aFiles[] = array (
+                'name' => $sFieldName,
+                'id' => $iMediaId,
+                'title' => $aRow['title'],
+                'icon' => $aRow['file'],
+                'owner' => $aRow['owner'],
+                'checked' => '',
+            );
+        }
+        return $aFiles;
+    }  
+    function generateCustomMediaTemplates ($iProfileId, $iEntryId, $iThumb = 0, $sFieldName) {
+        $aTemplates = array ();
+        foreach ($this->_aMedia as $sType => $a) {
+
+            $aFiles = $this->_getFilesInEntry ($a['module'], $a['service_method'], $sFieldName, ($sType == 'photos' ? 'images' : $sType), (int)$iProfileId, $iEntryId);
+
+            // files choice / check boxes
+            $aVarsChoice = array (
+                'bx_if:empty' => array(
+                    'condition' => empty($aFiles),
+                    'content' => array ()
+                ), 
+                'bx_repeat:files' => $aFiles,
+                'type' => $sType,
+            );
+            $aTemplates[$sType]['choice'] = $aFiles ? $this->_oMain->_oTemplate->parseHtmlByName('form_field_files_choice', $aVarsChoice) : '';
+
+            // thumb choice / radio buttons
+            if ($a['thumb']) {
+                foreach ($aFiles as $k => $r) {
+                    $aFiles[$k]['checked'] = ($iThumb == $r['id'] ? 'checked' : '');
+                    $aFiles[$k]['name'] = $a['thumb'];
+                }
+                $aVarsThumbsChoice = array (
+                    'bx_if:empty' => array (
+                        'condition' => empty($aFiles),
+                        'content' => array ()
+                    ), 
+                    'bx_repeat:files' => $aFiles,
+                );                               
+                $aTemplates[$sType]['thumb_choice'] = $aFiles ? $this->_oMain->_oTemplate->parseHtmlByName('form_field_thumb_choice', $aVarsThumbsChoice) : '';
+            }
+
+            // upload form
+            $aVarsUpload = array (
+                'file' => $sFieldName, 
+                'title' => $sFieldName . '_title_' . $sType, 
+                'file_upload_title' => $a['title_upload'],
+                'bx_if:price' => array (
+                    'condition' => false, 'content' => array('price' => '', 'file_price_title' => '')
+                ),
+                'bx_if:privacy' => array (
+                    'condition' => false, 'content' => array('select' => '', 'file_permission_title' => '')
+                ),
+            );       
+            $aTemplates[$sType]['upload'] = $this->_oMain->_oTemplate->parseHtmlByName('form_field_files_upload', $aVarsUpload);
+        }
+        return $aTemplates;
+    }        
+		function _getYouTubeId($sUrl) {
+			if (preg_match('%youtube\\.com/(.+)%', $sUrl, $sMatch)) {
+				$sMatch = $sMatch[1];
+				$sNewUrl = array("watch?v=", "v/", "vi/");
+				$sString = str_replace($sNewUrl, "", $sMatch); 
+				$aString = explode('&',$sString);
+				$iId = $aString[0]; 
+			}else{ 
+				$iId = substr( parse_url($sUrl, PHP_URL_PATH), 1 );
+				$iId = ltrim( $iId, '/' ); 
+			} 
+				return $iId;  
+		}
+		function generateCustomRssTemplate ($iProfileId, $iEntryId, $sFieldName) {
+		 
+			$aTemplates = array ();
+		 	if (!db_value("SHOW TABLES LIKE 'ml_pages_rss'"))
+		 		return;				
+			if ($iEntryId)
+	 			$aRss = $GLOBALS['MySQL']->getAll("SELECT `id`, `id_entry`, `url`, `name` FROM `ml_pages_rss` WHERE `id_entry`={$iEntryId} {$sQuery}");
+	 		
+			if ($aRss)
+			{
+				$aRssLink = array();
+				foreach ($aRss as $k => $r) {
+					$aRssLink[$k] = array();
+					$aRssLink[$k]['id'] = $r['id'];
+					$aRssLink[$k]['name'] = $sFieldName;
+					$aRssLink[$k]['title'] = $r['name'];
+				}
+		
+				$aVarsChoice = array ( 
+					'bx_if:empty' => array(
+						'condition' => empty($aRssLink),
+						'content' => array ()
+					),
+		
+					'bx_repeat:feeds' => $aRssLink,
+				);                               
+				$aTemplates['choice'] =  $this->_oMain->_oTemplate->parseHtmlByName('form_field_rss_choice', $aVarsChoice);
+			}
+			
+			// upload form
+      $aVarsUpload = array (
+          'link' => $sFieldName, 
+          'title' => $sFieldName . '_title_rss', 
+      );
+      $aTemplates['upload'] = $this->_oMain->_oTemplate->parseHtmlByName('form_field_rss', $aVarsUpload);
+	 
+			return $aTemplates;
+		} 
+	
+		function generateCustomYouTubeTemplates ($iProfileId, $iEntryId, $sFieldName) {
+		 	if (!db_value("SHOW TABLES LIKE 'ml_pages_youtube'"))
+		 		return;				 
+			if ($iEntryId)
+	 			$aYouTubes = $GLOBALS['MySQL']->getAll("SELECT `id`, `id_entry`, `title`, `url` FROM `ml_pages_youtube` WHERE `id_entry`= {$iEntryId} {$sQuery}");
+
+			$aYouTubesVids = array();
+			if ($aYouTubes)
+			{
+				foreach ($aYouTubes as $k => $r) {
+					$aYouTubesVids[$k] = array();
+					$aYouTubesVids[$k]['name'] = $sFieldName;
+					$aYouTubesVids[$k]['id'] = $r['id'];
+					$aYouTubesVids[$k]['video_id'] = $this->_getYouTubeId($r['url']);
+					$aYouTubesVids[$k]['video_title'] = $r['title'];
+				}
+		
+				$aVarsChoice = array ( 
+					'bx_if:empty' => array(
+						'condition' => empty($aYouTubesVids),
+						'content' => array ()
+					),
+		
+					'bx_repeat:videos' => $aYouTubesVids,
+				);                               
+				$aTemplates['choice'] =  $this->_oMain->_oTemplate->parseHtmlByName('form_field_youtube_choice', $aVarsChoice);
+			}
+      $aVarsUpload = array (
+          'link' => $sFieldName, 
+          'title' => $sFieldName . '_title_youtube', 
+      );   
+			$aTemplates['upload'] = $this->_oMain->_oTemplate->parseHtmlByName('form_field_youtube', $aVarsUpload);
+	 
+			return $aTemplates;
+		} 
+	
+    function convertJoinField2Input($aItem, $aParams, $iPerson) {
+        
+        $bCouple        = $aParams['couple'];
+        $aValues        = $aParams['values'];
+        $aErrors        = $aParams['errors'];
+        $aCustomMediaTemplates = $this->generateCustomMediaTemplates($this->_iProfileId, 0, 0, $aItem['Name']);
+        $aCustomYouTubeTemplates = $this->generateCustomYouTubeTemplates($this->_iProfileId, 0, $aItem['Name']);
+        $aCustomRssTemplates = $this->generateCustomRssTemplate ($this->_iProfileId, 0, $aItem['Name']);
+   
+        $aInput = array();
+        switch ($aItem['Type']) {
+            case 'text':  
+            	$aInput['type'] = 'text';     
+            	$aInput['value'] = $aValues[$iPerson]; 
+            	if ($aItem['MediaType'] != 'none')
+            	{
+            		$aInput['type'] = 'custom';
+            		switch ($aItem['MediaType']) {
+            			case 'photo':
+            				$aInput['content'] = $aCustomMediaTemplates['photos']['upload'];
+            			break;
+            			case 'video':
+            				$aInput['content'] = $aCustomMediaTemplates['videos']['upload'];
+            			break;
+            			case 'sound':
+            				$aInput['content'] = $aCustomMediaTemplates['sounds']['upload'];
+            			break;
+            			case 'file':
+            				$aInput['content'] = $aCustomMediaTemplates['files']['upload'];
+            			break;
+            			case 'rss':
+            				$aInput['content'] = $aCustomRssTemplates['upload'];
+            			break;
+            			case 'youtube':
+            				$aInput['content'] = $aCustomYouTubeTemplates['upload'];
+            			break;
+            			case 'editorlog':
+            				$aInput['type'] = 'hidden';
+            				$aInput['value'] = getLoggedId();
+            			break;
+            			case 'datelog':
+            				$aInput['type'] = 'hidden';
+            				$aInput['value'] = time();
+            			break;
+            		}
+            	}
+            break;
+            case 'area':  $aInput['type'] = 'textarea'; $aInput['value'] = $aValues[$iPerson]; $aInput['attrs']['counter'] = 'true'; /*$aInput['html'] = true;*/ break;
+            case 'html_area':  $aInput['type'] = 'textarea'; $aInput['html'] = 2; $aInput['value'] = $aValues[$iPerson]; $aInput['attrs']['counter'] = 'true'; break;
+            case 'date':     $aInput['type'] = $aItem['WithTime'] ? 'datetime' : 'date';   $aInput['infodisplay']= 'filterDate';   $aInput['value'] = $aValues[$iPerson]; break;
+            case 'datetime': $aInput['type'] = 'datetime'; $aInput['value'] = $aValues[$iPerson]; break;
+            case 'num':   $aInput['type'] = 'number';   $aInput['value'] = $aValues[$iPerson]; break;
+            case 'range': $aInput['type'] = 'doublerange';    $aInput['value'] = $aValues[$iPerson]; break;
+            case 'pass':  $aInput['type'] = 'password'; break;
+            case 'bool':
+                $aInput['type']    = 'checkbox';
+                $aInput['value']   = 'yes';
+                $aInput['checked'] = (bool)(int)$aValues[$iPerson];
+            break;
+            
+            case 'select_one':
+                switch ($aItem['Control']) {
+                    case 'select': $aInput['type'] = 'select';    break;
+                    case 'radio':  $aInput['type'] = 'radio_set'; break;
+                }
+                $aValues = $this->convertValues4Input($aItem['Values'], $aItem['UseLKey'], $aItem['Name'], $aItem);
+                $aInput['values'] = $aValues['values'] ? $aValues['values'] : $aValues;
+                $aInput['attrs'] = $aValues['attrs'] ? $aValues['attrs'] : '';
+                $aInput['value'] = $aItem['Default'] ? $aItem['Default'] : $aValues[$iPerson];
+            break;
+            
+            case 'select_set':
+                switch ($aItem['Control']) {
+                    case 'select':   $aInput['type'] = 'select_multiple'; break;
+                    case 'checkbox': $aInput['type'] = 'checkbox_set';    break;
+                }
+                
+                $aInput['values'] = $this->convertValues4Input($aItem['Values'], $aItem['UseLKey'], $aItem['Name']);
+                
+                $aInput['value'] = $aValues[$iPerson];
+            break;
+            case 'photo':
+            		$aInput['type'] = 'file';
+            break;
+            
+            case 'system':
+                switch ($aItem['Name']) {
+                    case 'TermsOfUse':
+                        $aInput = array(
+                            'type' => 'checkbox',
+                            'label' => _t($aItem['Caption']),
+                            'colspan' => false,
+                            'value' => 'yes',
+                        );
+                        $aItem['Caption'] = '';
+                    break;
+                    
+                    case 'Couple':
+						if ('on' == getParam('enable_global_couple')) {
+							$aInput = array(
+						        'type' => 'select',
+					            'values' => array(
+				                    'no' => _t('_Single'),
+			                        'yes' => _t('_Couple'),
+		                        ),
+	                            'attrs' => array(
+								    'onchange' => 'doShowHideSecondProfile(this.value, this.form);',
+							    ),
+						        'value' => $bCouple ? 'yes' : 'no',
+					        );
+						} else {
+				            $aInput = array(
+			                    'type' => 'hidden',
+		                        'value' => 'no',
+							);
+						}
+                    break;
+                    
+                    case 'Captcha':
+                        $aInput['type'] = 'captcha';
+                    break;
+                    
+                    case 'thumb':
+                        $aInput['type'] = 'file';
+                }
+            break;
+        }
+        
+        $aInput['name']     = ( $aItem['Type'] == 'system' ) ? $aItem['Name'] : ( $aItem['Name'] . "[$iPerson]" );
+        $aInput['caption']  = _t( $aItem['Caption'] );
+        $aInput['required'] = $aItem['Mandatory'];
+        $aInput['info']     = (
+            ($sInfo = _t( $aItem['Desc'], $aItem['Min'], $aItem['Max'] )) != $aItem['Desc']) // if info is translated
+            ? $sInfo : null;
+        
+        if ($aItem['Type'] == 'date') {
+            $aInput['attrs']['min'] = $aItem['Max'] ? (date('Y') - $aItem['Max']) . '-' . date('m') . '-' . date('d') : (date('Y') - 100) . '-' . date('m') . '-' . date('d');
+            $aInput['attrs']['max'] = $aItem['Min'] ? (date('Y') - $aItem['Min']) . '-' . date('m') . '-' . date('d') : (date('Y') + 100) . '-' . date('m') . '-' . date('d');
+        } else {
+            $aInput['attrs']['min'] = $aItem['Min'];
+            $aInput['attrs']['max'] = $aItem['Max'];
+        }
+		 
+        $aInput['error'] = $aErrors[$iPerson];
+        if ($aItem['WithPhoto'] || $aItem['MediaType'] == 'map')
+        {
+					$aVarsUpload = array (   
+						'display_form' => 'visible',
+						'input_name' => $aItem['Name'],
+						'form_submit' => _t('_ml_pages_form_save'),
+						'draggable' => 'true',
+						'form_find' => _t('_ml_pages_form_find'),
+						'Closest_matching_address' => _t('_ml_pages_matching_address'),
+						'Current_position' => _t('_ml_pages_position'),
+						'default_address' => $aInput['value'] ? $aInput['value'] : 'New York',
+					);
+         
+					$aInput['type'] = 'custom';
+					$aInput['content'] = $this->_oMain->_oTemplate->parseHtmlByName('location', $aVarsUpload);
+        }
+        
+        if ($aItem['Multiplyable'] && $aItem['MediaType'] == 'none')
+        {
+        	$aInput['value'] = explode($this->_sDelimeter, $aInput['value']);
+        	$aInput['name'] = $aItem['Name'] . '[]';
+        	$aInput['attrs']['multiplyable'] = 'true';
+        } 
+        if ($aItem['Attribute'] == 'addon')
+        {
+        	$aInput['type'] = 'select_box';
+          $aInput['name'] = $aItem['Name'];
+        }
+
+        if ($iPerson == 1) {
+            $aInput['tr_attrs'] = array(
+                'class' => 'hidable',
+                'style' => 'display: ' . ($bCouple ? 'table-row' : 'none'),
+            );
+            
+        }
+        
+        return $aInput;
+    }
+    
+
+    function convertValues4Input($mValues, $sUseLKey = 'LKey', $sName = '', $aItem = array(), $sValue = '') {
+        $aValues = array();
+				if (db_value("SHOW TABLES LIKE '{$mValues[0]}'") && $sName && $mValues[0] != 'ml_pages_fields') {
+        		switch($mValues[0])
+        		{
+        			case 'sys_acl_levels':
+        				require_once(BX_DIRECTORY_PATH_INC . 'membership_levels.inc.php');
+        				$aMemberships = getMemberships ();
+        				unset ($aMemberships[MEMBERSHIP_ID_NON_MEMBER]);
+        				$aValues = array('' => _t('_ml_pages_membership_filter_none')) + $aMemberships;
+        				$aAllValues['values'] = $aValues;
+        				return $aAllValues;
+        			break;
+        			case 'sys_categories':
+        				bx_import('BxDolCategories');
+        				$oCategories = new BxDolCategories();
+        				$aValues = $oCategories->getGroupChooser('bx_wells', getLoggedId(), true, $sValue);
+        				$aValues = $aValues['values'];
+        				$aAllValues['values'] = $aValues;
+        				return $aAllValues;
+        			break;
+        			case 'sys_privacy_actions':
+        				$aInputPrivacyCustom = array ();
+        				$aInputPrivacyCustom[] = array ('key' => '', 'value' => '----');
+        				$aInputPrivacyCustom[] = array ('key' => 'f', 'value' => _t('_ml_pages_privacy_fans_only'));
+        				$sName = str_replace('allow_', '', $sName);
+        				$sName = str_replace('_to', '', $sName);
+        				$aPValues = $this->_oMain->_oPrivacy->getGroupChooser(getLoggedId(), $this->_aModule['uri'], $sName);
+        				//print_r($aPValues['values']);
+        				foreach ($aPValues['values'] as $sKey => $aPValue) {
+        						$aValues[] = array ('key' => $aPValue['key'], 'value' => $aPValue['value']);;
+        				}
+				        if ($sName == 'upload_files' || $sName == 'upload_photos' || $sName == 'upload_videos' || $sName == 'upload_sounds')
+					        $aValues = array (
+					            array('key' => 'f', 'value' => _t('_ml_pages_privacy_fans')),
+					            array('key' => 'a', 'value' => _t('_ml_pages_privacy_admins_only'))
+					        );
+				        else
+        					$aValues = array_merge($aValues, $aInputPrivacyCustom);
+        			break;
+       				default:
+        				if ($aItem['IdField'] && $aItem['CaptionField'])
+        				{
+        					if ($aItem['DepParentField'] && !$aItem['DepField'])
+        					{
+        						$sValue = $sValue ? $sValue : $aItem['Default'];
+        						if (!$sValue)
+        							$sValue = db_value("SELECT `Default` FROM `ml_pages_fields` WHERE `Name` = '{$sName}' LIMIT 1");
+        						if ($sValue)
+        						{
+      								$iParentId = db_value("SELECT `{$aItem['DepParentField']}` FROM `{$mValues[0]}` WHERE `{$aItem['IdField']}` = '{$sValue}' LIMIT 1");
+	        						if ($iParentId)
+	        							$sAddQuery = "WHERE `{$aItem['DepParentField']}` = '{$iParentId}'";
+	        						else
+	        							$sAddQuery = "WHERE `{$aItem['DepParentField']}` = '{$sValue}'";
+	        					}
+	        					$aAllValues['attrs'] = array('id' => "{$sName}");
+      						}
+      						elseif ($aItem['DepParentField'] && $aItem['DepField'])
+      							$sAddQuery = "WHERE `{$aItem['DepParentField']}` = '0'";
+
+      						$sQuery = db_res("SELECT `{$aItem['IdField']}` as `key`, `{$aItem['CaptionField']}` as `value` FROM `{$mValues[0]}` {$sAddQuery}");
+        					
+        					while($aRow = mysql_fetch_array($sQuery)) 
+        						$aValues[$aRow['key']] = $aRow['value'];
+        					if ($aItem['DepField'])
+        					{
+        						$aDepData = db_arr("SELECT `IdField`, `CaptionField`, `DepParentField` FROM `ml_pages_fields` WHERE `Name` = '{$aItem['DepField']}' LIMIT 1");
+        						if (empty($aDepData)) return;
+        						$sAjaxUrl = BX_DOL_URL_ROOT .  "modules/boonex/wells/pages.php?ajax=1&key={$aDepData['IdField']}&value={$aDepData['CaptionField']}&table={$mValues[0]}&parent={$aDepData['DepParentField']}&filter=" ;
+        						$aAllValues['attrs'] = array('onchange' => "getHtmlData('{$aItem['DepField']}','{$sAjaxUrl}'+this.value)");
+        					}
+        					$aAllValues['values'] = $aValues;
+        					return $aAllValues;
+         				}
+        				/*if ($aItem['IdField'] && $aItem['CaptionField'])
+        				{
+        					if ($aItem['DepParentField'] && !$aItem['DepField'])
+        					{
+        						$sValue = $sValue ? $sValue : $aItem['Default'];
+        						if (!$sValue)
+        							$sValue = db_value("SELECT `Default` FROM `ml_pages_fields` WHERE `Name` = '{$sName}' LIMIT 1");
+        						if ($sValue)
+	        						$sAddQuery = "WHERE `{$aItem['DepParentField']}` = '{$sValue}'";
+	        					$aAllValues['attrs'] = array('id' => "{$sName}");
+      						}
+      						elseif ($aItem['DepParentField'] && $aItem['DepField'])
+      							$sAddQuery = "WHERE `{$aItem['DepParentField']}` = '0'";
+      							
+      						$sQuery = db_res("SELECT `{$aItem['IdField']}` as `key`, `{$aItem['CaptionField']}` as `value` FROM `{$mValues[0]}` {$sAddQuery}");
+        					
+        					while($aRow = mysql_fetch_array($sQuery))
+        						$aValues[$aRow['key']] = $aRow['value'];
+        					if ($aItem['DepField'])
+        					{
+        						$aDepData = db_arr("SELECT `IdField`, `CaptionField`, `DepParentField` FROM `ml_pages_fields` WHERE `Name` = '{$aItem['DepField']}' LIMIT 1");
+        						if (empty($aDepData)) return;
+        						$sAjaxUrl = BX_DOL_URL_ROOT .  "modules/boonex/wells/pages.php?ajax=1&key={$aDepData['IdField']}&value={$aDepData['CaptionField']}&table={$mValues[0]}&parent={$aDepData['DepParentField']}&filter=" ;
+        						$aAllValues['attrs'] = array('onchange' => "getHtmlData('{$aItem['DepField']}','{$sAjaxUrl}'+this.value)");
+        					}
+        					$aAllValues['values'] = $aValues;
+        					return $aAllValues;
+         				}*/
+        		}
+        }elseif (is_array($mValues)) {
+            foreach ($mValues as $sKey)
+                $aValues[$sKey] = _t('_FieldValues_' . $sKey);
+        } elseif (is_string($mValues) and !empty($mValues) and substr($mValues, 0, 2) == $this->sLinkPref) {
+            $sKey = substr($mValues, 2);
+            if (isset($GLOBALS['aPreValues'][$sKey]) ) {
+                $aPValues = $GLOBALS['aPreValues'][$sKey];
+                
+                foreach ($aPValues as $sKey => $aPValue) {
+                    
+                    if (!isset($aPValue[$sUseLKey]))
+                        $sUseLKey = 'LKey';
+                    
+                    $aValues[$sKey] = _t($aPValue[$sUseLKey]);
+                }
+            }
+        }
+        //echoDbg($aValues);
+        return $aValues;
+    }
+}

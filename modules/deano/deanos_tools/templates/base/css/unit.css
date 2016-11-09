@@ -1,0 +1,99 @@
+﻿.form_advanced_table th, .form_advanced_table td {
+	background-color: transparent;
+}
+.dbrow {
+	vertical-align: middle;
+	white-space: nowrap;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 0px;
+	border-left-width: 0px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	padding: 8px;
+}
+.db1 {
+	background-color: #FFFFBF;
+	height: 26px;
+}
+.db1 td {
+	padding: 8px;
+	border-bottom: 1px solid #DADADA;
+	text-align: left;
+}
+.db2 {
+	background-color: #E5E5E5;
+	height: 26px;
+}
+.db2 td {
+	text-align: left;
+}
+.sortcont {
+	position: relative;
+	padding-right: 18px;
+}
+.sortarrow {
+	position: absolute;
+	right: 0px;
+	top: -1px;
+}
+.sortcont2 {
+	position: relative;
+}
+.sortarrow2 {
+	position: absolute;
+	left: 108px;
+	top: -1px;
+}
+.dbcsadblock {
+	background-color: #ECECEC;
+}
+.dbcsaddivider {
+	background-color: #DADADA;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	height: 1px;
+}
+.dbcsadleft {
+	float: left;
+	padding-right: 6px;
+	width: 90px;
+}
+.dbcsdonateleft {
+	float: left;
+	padding-right: 14px;
+	margin-top: 14px;
+	margin-bottom: 16px;
+	width: 130px;
+}
+.dbcsadright {
+	white-space: normal;
+	padding-left: 8px;
+	padding-top: 6px;
+	padding-right: 8px;
+}
+.dbcsdonateright {
+	padding: 8px 8px 8px 8px;
+	white-space: normal;
+}
+.folderbg {
+	background-image: url('../images/icons/folder.png');
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 18px;
+	height: 16px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+.filebg {
+	background-image: url('../images/icons/file.png');
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 18px;
+	height: 16px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+
+}

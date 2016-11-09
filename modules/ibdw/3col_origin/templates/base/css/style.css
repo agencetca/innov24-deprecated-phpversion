@@ -1,0 +1,279 @@
+.rigamenu3 {
+ height: 16px;
+ margin-top: 0;
+ padding: 4px 0 4px 8px;
+}
+.rigamenu4 {
+ border-bottom:1px solid #C7C7C7;
+ height:43px;
+ margin: 0 0 1px 0;
+ padding:2px;
+}
+.rigamenu5 {
+ border-top: 1px solid #E1E9ED;
+ height: 55px;
+ margin: 0 0 1px 0;
+ padding: 4px;
+}
+.rigamenu6 {
+ height: 55px;
+ margin: 0 0 1px 0;
+ padding: 4px;
+}
+.rigamenu3:hover {background:#CCC;}
+.rhegionmenuelement3 {
+ background: none repeat scroll 0 0 #F5F5F5;
+ float: left;
+ padding: 6px 0 5px;
+ width: 100%;
+}
+.titleamicireq {
+ padding: 2px 3px 3px 0;
+ font-weight: bold;
+ margin-left:0
+}
+.titleamicireq a {color: #333 !important;}
+.titlesaluti {
+ background:url('../images/icons/icon_greeting.png') no-repeat;
+ color: #333 !important;
+ margin-left: 5px;
+ padding: 0 4px 4px 22px;
+ text-decoration: none !important;
+ float: left;
+}
+.rigamenumodificadx {
+ background: none repeat scroll 0 0 #FFF;
+ border-radius: 6px;
+ -webkit-border-radius: 6px;
+ -moz-border-radius: 6px;
+ box-shadow: 0 0 3px #999;
+ -webkit-box-shadow: 0 0 3px #999;
+ -moz-box-shadow: 0 0 3px #999;
+ margin: 0 6px 10px;
+ padding: 6px 0 5px 5px;
+}
+.titlealtro {
+ background: url("../images/icons/memeber_menu_profile.png") no-repeat scroll 0 0 transparent;
+ color: #333 !important;
+ font-weight: bold;
+ padding: 1px 4px 2px 22px;
+}
+.titleinvita {
+ background:url('../images/icons/invite.png') no-repeat;
+ color: #333 !important;
+ margin-left: 5px;
+ padding: 0 4px 4px 22px;
+ text-decoration: none !important;
+}
+.titleeventirec {
+ background: url("../images/icons/events.png") no-repeat scroll 0 0 transparent;
+ color: #333 !important;
+ font-weight: bold;
+ padding: 1px 4px 2px 22px;
+}
+.titlesugge {
+ padding: 2px 3px 3px 0px;
+ margin-left:0px;
+ font-weight: bold;
+}
+.rigamenuev {
+ margin-left: 25px;
+ margin-bottom:4px;
+}
+.rigamenuev a {
+ font-weight: bold;
+ color: #333 !important;
+}
+.titlecompleannirec {
+ background:url('../images/icons/birthday.png') no-repeat;
+ padding: 2px 3px 3px 20px;
+ margin-left:0px;
+ font-weight: bold;
+}
+.titlespionerec {
+ background:url('../images/icons/eye.png') no-repeat;
+ padding: 0px 3px 3px 20px;
+ margin-left:0px;
+ font-weight: bold;
+}
+.suggerito {
+ background: url("../images/icons/user_add.png") no-repeat scroll 6px 4px #DDD;
+ border-radius: 6px;
+ -webkit-border-radius: 6px;
+ -moz-border-radius: 6px;
+ box-shadow: 0 0 1px 1px #333;
+ -webkit-box-shadow: 0 0 1px 1px #333;
+ -moz-box-shadow: 0 0 1px 1px #333;
+ color: #333 !important;
+ cursor: pointer;
+ float: left;
+ margin-top: 6px;
+ padding: 4px 4px 4px 24px;
+}
+.suggerito:hover {
+ background-color: #FFF;
+ text-decoration: none;
+}
+.deletesuggest {
+ background:url("../images/icons/close.png") no-repeat scroll right center transparent;
+ float:right;
+ height:16px;
+ margin:0px;
+ padding:0px;
+ width:16px;
+ cursor:pointer;
+}
+.rigamenuspy {
+ height:38px;
+ margin:2px 25px;
+}
+.rigamenusuggetop {
+ margin: 0;
+ padding: 0 8px;
+}
+.rigamenusugge
+{
+ border-top:1px solid #E1E9ED;
+ margin:0px;
+ padding: 0 8px;
+}
+.mioavatar1
+{
+ float:left;
+ margin:0 5px 0 0;
+}
+.mioavatfb {
+ border-radius: 10px;
+ -webkit-border-radius: 10px;
+ -moz-border-radius: 10px;
+ float: left;
+ height: 56px !important;
+ margin: 0 10px 0 6px;
+ width: 56px !important;
+}
+.mioavatfb2 {
+ float:left;
+ height: 38px !important;
+ width: 38px !important;
+ margin:0 5px 0 2px;
+ border-radius:6px;
+ -webkit-border-radius: 6px;
+ -moz-border-radius: 6px;
+}
+.mioavatarsmall2 {
+ float:left;
+ margin:0 0px 0 0;
+ width:44px;
+}
+.mioutentesmall2 {
+ font-size:11px;
+ font-weight:normal;
+ width:100%;
+ padding:1px 0;
+}
+.mioutentesmall2 a {color: #333 !important;}
+.mioutentesmall4 {
+ font-size:11px;
+ font-weight:normal;
+ width:100%;
+ padding:0px 0;
+ margin-left:44px;
+}
+.mioutentesmall5 {
+ font-size:11px;
+ font-weight:normal;
+ width:100%;
+ padding:0px 0;
+ margin-left:50px;
+}
+.mioavatarsmall3 {
+ float:left;
+ margin:2px 0px 0 0;
+ width:44px;
+}
+.mioutentesmall3 {
+ font-size:11px;
+ font-weight:bolder;
+ padding:0;
+}
+.pulsante1 {padding:2px;}
+.pulsante {
+ float:left;
+ margin: 0 8px 0 0;
+ padding:0px;
+}
+.pulsante:hover {cursor: pointer;}
+.pulsante form input {
+ background: none repeat scroll 0 0 #DDD;
+ border: 0 none !important;
+ border-radius: 6px;
+ -webkit-border-radius: 6px;
+ -moz-border-radius: 6px;
+ box-shadow: 0 0 1px 1px #333;
+ -webkit-box-shadow: 0 0 1px 1px #333;
+ -moz-box-shadow: 0 0 1px 1px #333;
+ color: #333 !important;
+ float: left;
+ font-size: 11px !important;
+ font-weight: bold !important;
+ height: 21px;
+ margin: 0;
+ padding: 0 4px;
+}
+.pulsante form input:hover {background:none repeat scroll 0 0 #FFF;}
+#amicomuni {
+ font-weight: normal;
+ padding: 3px 0;
+}
+.click:hover {cursor: pointer;}
+.eventino {
+ color:#333;
+ font-size:10px;
+}
+.nomeamico {
+ padding-bottom: 1px;
+}
+.nomeamico a {
+ color:#333333 !important;
+ font-weight: bold;
+}
+.contenitorepulsanti {margin-top:0px;float:left;}
+.riepilogo {height:68px;}
+.affinita {}
+.mtf {
+    float: left;
+    font-weight: bold;
+    width: 100%;
+}
+.itemcont {padding: 4px 0;}
+.click {
+ font-size:11px !important;
+ font-weight:normal !important;
+}
+#distanziatore {height:20px;}
+.bubble3col {
+ background-color: #999;
+ border-radius: 4px;
+ -webkit-border-radius: 4px;
+ -moz-border-radius: 4px;
+ color: #FFF;
+ float: left;
+ font-size: 10px;
+ margin-left: 1px;
+ padding: 1px;
+ text-align: center;
+ width: 14px;
+ float: left;
+ font-weight: bold;
+}
+.bubble3colforceddx {
+ background-color: #999;
+ border-radius: 4px;
+ -webkit-border-radius: 4px;
+ -moz-border-radius: 4px;
+ color: #FFF;
+ font-size: 10px;
+ font-weight: bold;
+ margin-left: 4px;
+ padding: 1px 4px;
+}

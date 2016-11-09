@@ -1,0 +1,41 @@
+<div id="imagenews-content-__sample__" class="imagenews-content">
+    <div class="imagenews-entries">
+        <bx_repeat:entries>
+            <div id="__id__" class="imagenews-entry">
+				<div class="imagenews-info-type2" ><img style="display:__display__" src=__path__ />
+					<div class="__container__">
+					    __voting__
+						<bx_if:checkbox>
+							<div class="imagenews-checkbox">
+								<input type="checkbox" name="imagenews-ids[]" value="__id__" />
+							</div>
+						</bx_if:checkbox>
+						<div class="imagenews-caption-type2">
+							<a class="imagenews-caption-type2" href="__link__">__caption__</a>
+							<bx_if:status>
+								<span class="imagenews-status">__status__</span>
+							</bx_if:status>
+							<bx_if:featured>
+								<span class="imagenews-status"><bx_text:_imagenews_featured /></span>
+							</bx_if:featured>
+							<bx_if:edit_link>
+								<a href="__edit_link_url__">__edit_link_caption__</a>
+							</bx_if:edit_link>
+						</div>
+						<div class="imagenews-snippet">__snippet__</div>
+						<div class="imagenews-date imagenews-date-text">
+							__date__&nbsp;&nbsp;&nbsp;
+							<bx_text:_imagenews_txt_comments />: __comments__&nbsp;&nbsp;&nbsp;
+							<bx_text:_imagenews_txt_categories />: <bx_repeat:categories><a href="__href__">__title__</a>&nbsp;&nbsp;</bx_repeat:categories>&nbsp;&nbsp;&nbsp;
+							<bx_text:_imagenews_txt_tags />: <bx_repeat:tags><a href="__href__">__title__</a>&nbsp;&nbsp;</bx_repeat:tags>
+						</div>
+						<div class="imagenews-text-content">__content__</div>
+					</div>
+                </div>
+                <div class="imagenews-cb">&nbsp;</div>
+            </div>
+        </bx_repeat:entries>
+    </div>
+    __paginate__
+    __loading__
+</div>

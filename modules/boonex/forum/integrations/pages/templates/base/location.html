@@ -1,0 +1,148 @@
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> 
+<script type="text/javascript"> 
+var geocoder = new google.maps.Geocoder();
+
+function geocodePosition(pos) {
+  geocoder.geocode({
+    latLng: pos
+  }, function(responses) {
+    if (responses && responses.length > 0) {
+      updateMarkerAddress(responses[0].formatted_address);
+    } else {
+      updateMarkerAddress('Cannot determine address at this location.');
+    }
+  });
+}
+  function findMap__input_name__(def_address) {
+  	var rendererOptions = {
+  		draggable: __draggable__
+		};
+		geocoder = new google.maps.Geocoder();
+		//geocoder = new GClientGeocoder();
+		var address = $('#find__input_name__').val();
+		if (def_address)
+			var address = def_address;
+    
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+        //map.setCenter(results[0].geometry.location);
+
+			  var map = new google.maps.Map(document.getElementById('mapCanvas__input_name__'), {
+			    zoom: 5,
+			    center: results[0].geometry.location,
+			    mapTypeId: google.maps.MapTypeId.ROADMAP
+			  });
+			  var marker = new google.maps.Marker({
+			    position: results[0].geometry.location,
+			    map: map,
+			    draggable: __draggable__
+			  });
+			  // Update current position info.
+			  updateMarkerPosition(results[0].geometry.location);
+			  geocodePosition(results[0].geometry.location);
+			  $('#__input_name__').val(marker.getPosition());
+
+			  // Add dragging event listeners.
+			  google.maps.event.addListener(marker, 'dragstart', function() {
+			    updateMarkerAddress('Dragging...');
+			  });
+			  
+			  google.maps.event.addListener(marker, 'drag', function() {
+			    updateMarkerStatus('Dragging...');
+			    updateMarkerPosition(marker.getPosition());
+			  });
+			  
+			  google.maps.event.addListener(marker, 'dragend', function() {
+			  	$('#__input_name__').val(marker.getPosition());
+			    updateMarkerStatus('Drag ended');
+			    geocodePosition(marker.getPosition());
+			  });
+
+      }
+    });
+
+  }	
+function updateMarkerStatus(str) {
+  document.getElementById('markerStatus__input_name__').innerHTML = str;
+}
+
+function updateMarkerPosition(latLng) {
+  document.getElementById('info__input_name__').innerHTML = [
+    latLng.lat(),
+    latLng.lng()
+  ].join(', ');
+}
+
+function updateMarkerAddress(str) {
+  document.getElementById('address__input_name__').innerHTML = str;
+}
+
+function initialize() {
+  var latLng = new google.maps.LatLng(-34.397, 150.644);
+  var map = new google.maps.Map(document.getElementById('mapCanvas__input_name__'), {
+    zoom: 5,
+    center: latLng,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+  var marker = new google.maps.Marker({
+    position: latLng,
+    map: map,
+    draggable: __draggable__
+  });
+  var def_address = '__default_address__';
+  if (def_address)
+  {
+  	findMap__input_name__(def_address)
+  	return;
+  }
+  // Update current position info.
+  updateMarkerPosition(latLng);
+  geocodePosition(latLng);
+  
+  // Add dragging event listeners.
+  google.maps.event.addListener(marker, 'dragstart', function() {
+    updateMarkerAddress('Dragging...');
+  });
+  
+  google.maps.event.addListener(marker, 'drag', function() {
+    updateMarkerStatus('Dragging...');
+    updateMarkerPosition(marker.getPosition());
+  });
+  
+  google.maps.event.addListener(marker, 'dragend', function() {
+    updateMarkerStatus('Drag ended');
+    geocodePosition(marker.getPosition());
+  });
+}
+
+// Onload handler to fire off the app.
+google.maps.event.addDomListener(window, 'load', initialize);
+
+</script> 
+<body onload="initialize()"> 
+ <style>
+  #mapCanvas__input_name__ {
+    width: 550px;
+    height: 400px;
+  }
+  #infoPanel {
+    margin-right: 5px;
+    width:250px;
+  }
+  #infoPanel div {
+    margin-bottom: 5px;
+  }
+  </style>
+
+<div id="mapCanvas__input_name__"></div><br />
+  <div id="infoPanel">
+    <div style="display:none;" id="markerStatus__input_name__"><i>Click and drag the marker.</i></div>
+    <div style="display:none;" id="info__input_name__"></div>
+    <div style="display:none;" id="address__input_name__"></div>
+		<div class="input_wrapper input_wrapper_text">
+							            <input class="form_input_text" type="text" id="find__input_name__" name="find__input_name__"/>&nbsp;<input style="margin-top:-5px;" type="button" value="__form_find__" onclick="findMap__input_name__();" />
+							            <div class="input_close input_close_text"></div>
+							        </div>
+	  <input type="hidden" id="__input_name__" name="__input_name__[]"/>
+  </div>
+</body>

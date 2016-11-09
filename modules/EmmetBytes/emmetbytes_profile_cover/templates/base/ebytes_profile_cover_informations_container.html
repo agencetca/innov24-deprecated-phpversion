@@ -1,0 +1,56 @@
+<head>
+<meta charset="utf-8" />
+<link type="text/css" rel="stylesheet" href="Tooltip/tooltip.css" />
+<link type="text/css" rel="stylesheet" href="Tooltip/Fawn-tooltip.css" />
+<script type="text/javascript" src="Tooltip/tooltip.js"></script>
+
+<script> 
+function geturl() { 
+var url = document.URL; 
+if (window.XMLHttpRequest){
+xmlhttp=new XMLHttpRequest();
+} 
+else {
+xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+}
+xmlhttp.onreadystatechange = function() { 
+if (xmlhttp.readyState==4 && xmlhttp.status==200) 
+{
+ document.getElementById("global").innerHTML=xmlhttp.responseText;
+ }
+ } 
+ xmlhttp.open("GET","Tooltip/transfert.php?url="+url,true);
+ xmlhttp.send();
+ } 
+</script>
+</head>
+<body onload="geturl();">
+<div class="ebytes_profile_cover_info_inner_container">
+    <div class="ebytes_profile_cover_informations_container">
+		<div id="global">
+			<!----------------GAUCHE---------------------------------------->
+			<div class="left">
+				<div id="profiletype"></div><!---ProfileType----->
+				<div id="country"></div><!---Country, City----->
+				<div id="headline"></div><!---Headline----->
+				<div id="company"></div><!---Company----->
+				<a id="tool1"></a><!---Country, City----->
+				<div id="tool2"></div><!---Headline----->
+				<div id="tool3"></div><!---Company----->
+			<!----------------DROITE---------------------------------------->
+			</div>
+			<div class="right">
+				<div id="sexname"></div><!---Sex, Username----->
+				<div id="email"></div><!---Email----->
+				<div id="phone"></div><!---Phone number----->
+				<div id="mobile"></div><!---Mobile number----->
+				<div id="tool4"></div><!---Email----->
+				<div id="tool5"></div><!---Phone number----->
+				<div id="tool6"></div><!---Mobile number----->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- <div class='ebytes_profile_cover_info_link_container ebytes_profile_cover_bottom_data_link_container'><a href='__about_link__'>__about_caption__</a></div> -->
+</body>
+</html>

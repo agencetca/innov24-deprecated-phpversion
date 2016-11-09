@@ -1,0 +1,22 @@
+.item_wrapper{
+	margin-bottom: 5px;
+}
+
+.alertUnit{
+	margin: 10px; 
+	
+}
+
+.alerts_unit {
+	padding: 0px;
+	margin: 10px;
+	overflow: hidden;
+	position: relative;
+}
+
+.input_wrapper_custom {
+    float: none; 
+	width:100%;
+    padding-top:3px;
+ }
+ 

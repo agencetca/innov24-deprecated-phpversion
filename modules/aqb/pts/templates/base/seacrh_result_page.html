@@ -1,0 +1,15 @@
+<bx_if:profile_types>
+	<bx_text:_aqb_pts_avail_profile_types />:
+	<select class="form_input_select" id="profile_type_id" name="profile_type_id" onchange="refreshSearchLayout('__page_action_url__action_get_page_search_result/', this.value);">
+	<bx_repeat:profile_types>
+		<option value="__pt_id__" __selected__>__pt_name__</option>
+	</bx_repeat:profile_types>
+	</select>
+
+	<div id="search_layout_zone">
+		__layout__
+	</div>
+</bx_if:profile_types>
+<bx_if:no_profile_types>
+	<h3><bx_text:_aqb_pts_no_profile_types /></h3>
+</bx_if:no_profile_types>

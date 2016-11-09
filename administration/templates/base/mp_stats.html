@@ -1,0 +1,25 @@
+<iframe id="adm-mp-stats-iframe" name="adm-mp-stats-iframe"></iframe>
+<form id="adm-mp-stats-form" enctype="multipart/form-data" method="post" action="__action_url__" class="form_advanced" target="adm-mp-stats-iframe">
+	__image_graph__
+    <input type="hidden" name="adm-mp-members-ctl-type" value="__ctl_type__" />
+    <input type="hidden" name="adm-mp-members-view-type" value="__view_type__" />    
+    <div class="adm-db-control-panel">
+        <div class="adm-mp-order-item">
+            <bx_text:_adm_txt_mp_order_by />
+            <select name="order_by" class="form_input_select" onchange="__change_order__">
+			    <option value="" selected="selected"><bx_text:_adm_txt_mp_order_none /></option>
+                <option value="dateRange DESC"><bx_text:_member_statistics_date_range /></option>
+                <option value="members DESC"><bx_text:_member_statistics_members_number /></option>
+				<option value="registered DESC"><bx_text:_member_statistics_registered_number /></option>
+            </select>            
+        </div>
+        <div class="adm-mp-order-item-right">
+            __per_page__
+        </div>
+        <div class="clear_both">&nbsp;</div>
+    </div>
+
+    <div class="adm-mp-stats-wrapper" id="adm-mp-stats-geeky" style="__style_geeky__">__content_geeky__</div>
+    __control__
+    __loading__ 
+</form>

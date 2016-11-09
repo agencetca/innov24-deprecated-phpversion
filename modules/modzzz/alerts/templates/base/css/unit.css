@@ -1,0 +1,135 @@
+.modzzz_alerts_unit {
+    height: 235px;
+}
+
+.modzzz_alerts_unit_admin {
+    position:relative;
+}
+
+.modzzz_alerts_unit .sys_file_search_pic {
+    height: 148px;
+}
+
+.modzzz_alerts_unit .sys_file_search_pic img {
+    height: 140px;
+}
+
+
+.alerts_unit {
+	padding: 0px;
+	margin: 10px;
+	overflow: hidden;
+	position: relative;
+}
+
+.alerts_unit .thumbnail_block {
+    left:0;
+    position:absolute;
+    top:0;
+}
+
+.alerts_unit .cls_res_thumb {
+    float:left;
+}
+
+.alerts_unit .unit_info {
+    margin-left:5px;
+    min-height:38px;
+}
+
+.alerts_unit .title {
+    font-size:12px;
+    margin-bottom:-3px;
+    width:85%;
+}
+
+.alerts_unit .fr_small_gray_centered {
+    color:#999;
+    height:15px;
+    line-height:15px;
+    font-size:9px;
+    float:left;
+    overflow:hidden;
+    margin-bottom:5px;
+    vertical-align:middle;
+}
+
+.alerts_unit .margined {
+    margin-right:5px;
+    line-height:18px;
+}
+
+.alerts_unit .margined10 {
+    margin-right:10px;
+}
+
+.alerts_unit .actions {
+    font-weight:bold;
+    font-size:12px;
+}
+
+.alerts_unit div.votes_small {
+    position:absolute;right:0px;top:0px;width:auto;
+}
+
+.alerts_unit .unit_info .browseCheckbox {
+    background-color:#FFCCCC;
+    height:20px;
+    left:1px;
+    float:left;
+    margin-right:5px;
+    top:1px;
+    width:20px;
+}
+
+
+.medium_text
+{
+	font-size:12px; 
+}
+
+.small_text
+{
+	font-size:10px; 
+}
+.gray_text
+{
+	font-size:11px; 
+	color:#CCC; 
+}
+
+
+.alerts_graph {
+        position: relative; /* IE is dumb */
+        width: 200px;
+        border: 1px solid red;
+        padding: 1px;
+}
+.alerts_graph_levels {
+        position: relative; /* IE is dumb */
+        width: 200px;
+        border: 0px solid red;
+        padding: 2px;
+}
+
+.alerts_graph .alerts_bar {
+        display: block; 
+		background-color:red;
+        text-align: center;
+        color: white; 
+		height:20px;
+        line-height: 2em;
+        border-right:0px solid yellow;
+}
+.alerts_text {
+	background:transparent;
+	width:100%;
+	text-align:center; 
+	font-weight: bold;
+	/* padding-right:15px; */
+}
+.alerts_graph .alerts_bar span { position: absolute; left: 1em; }
+
+.member_alerts_wrapper {
+	margin-bottom:5px; 
+}

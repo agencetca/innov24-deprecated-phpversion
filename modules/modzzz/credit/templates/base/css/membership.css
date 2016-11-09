@@ -1,0 +1,34 @@
+.membership_header_message {
+	padding: 6px;
+ 	background:none repeat scroll 0 0 #FFF9F9;
+	border:1px dashed #A052A9;
+    font-size:14px;
+    font-weight:bold;
+	margin-top: 10px;
+	margin-bottom: 10px;
+
+}
+
+.membership_photo {
+    border:1px solid #CCCCCC;
+    padding:2px 0;
+ }
+
+.membership_credits_msg {
+    font-weight:bold;
+    font-size:12px;
+}
+  
+.membership_row {
+    width:30%;
+    float:left; 
+	margin:5px; 
+} 
+
+.membership_unit {
+	padding: 0px;
+	margin: 10px;
+	overflow: hidden;
+	position: relative;
+}
+ 

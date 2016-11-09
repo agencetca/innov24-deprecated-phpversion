@@ -1,0 +1,10 @@
+.acls_table td {
+	border: 1px solid #ccc;
+	font-size: 10pt;
+}
+.header_row {
+	background-color:#E5E5E5;
+	text-align: center;
+	font-weight: bold;
+	font-size: 10pt;
+}

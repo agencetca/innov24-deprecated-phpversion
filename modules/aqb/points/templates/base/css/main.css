@@ -1,0 +1,295 @@
+/***************************************************************************
+* 
+*     copyright            : (C) 2009 AQB Soft
+*     website              : http://www.aqbsoft.com
+*      
+* IMPORTANT: This is a commercial product made by AQB Soft. It cannot be modified for other than personal usage.
+* The "personal usage" means the product can be installed and set up for ONE domain name ONLY. 
+* To be able to use this product for another domain names you have to order another copy of this product (license).
+* 
+* This product cannot be redistributed for free or a fee without written permission from AQB Soft.
+* 
+* This notice may not be removed from the source code.
+* 
+***************************************************************************/
+
+@CHARSET "UTF-8";
+
+table.points-history td{
+  	text-align:center;
+}
+
+table.points-history th{
+  	text-align:center;
+	background-color:#ECECEC;
+}
+
+table.points-info td.block_header{
+  	text-align:left;
+	background-color:#ECECEC;
+	font-size:12px;
+	font-weight:bold;
+}
+
+table.points-info td{
+  	text-align:center;
+}
+
+table.points-info th{
+  	text-align:center;
+	font-size:10px;
+}
+
+.points-actions-wrapper{
+  position:relative;
+  width:100%;
+  height:auto;
+  margin-bottom:5px;
+  overflow:hidden;
+  text-align:center;
+}
+
+.points-actions-wrapper span{
+  overflow:hidden;
+  text-align:center;
+  font-size:11px;
+  font-weight:normal;
+}
+
+.points-actions-controls span{
+  position:relative;
+  overflow:hidden;
+  margin-right:15px;
+}
+
+.points-actions-controls{
+  position:realtive;
+  height:auto;
+  margin-top:10px;
+  margin-bottom:10px;
+  overflow:hidden;
+}
+
+.points-actions-select{
+ 	width: 200px;
+}
+
+.points-actions-time-select{
+ 	width: 100px;
+}
+
+.points-actions-title{
+    width: 100%;
+    text-align:center;
+    overflow:hidden;
+    font-size:15px;
+  	font-weight:bold;
+  	margin-bottom:10px;
+}
+.aqb-points-main{
+	margin:10px;
+}
+
+span.select_items_buy_points {
+   position:relative;
+   float:right;	
+}
+
+span.select_items_buy_points a{
+   text-decoration:none;
+   font-size: 12px;
+   font-weight: bold;
+}
+
+span.select_items {
+	float:left;
+	position:relative;
+	vertical-align:middle;
+}
+
+table.buy-points-table tr{
+  text-align:center;		
+}
+
+table.buy-points-table td{
+  text-align:center;		
+}
+
+table.buy-points-table td{
+  text-align:center;		
+}
+
+div.buy-form-item{
+	float:left;
+	position:relative;
+	margin:5px;
+}
+
+div.points-actions-add-info{
+	float:right;
+	position:relative;
+}
+
+div.points-increment-title{
+    width: 100%;
+    text-align:center;
+    overflow:hidden;
+    font-size:13px;
+  	font-weight:normal;
+  	margin-bottom:10px;
+}
+
+/**************************************************/
+div.points-level-content{
+	min-height:116px;
+	padding-left:126px;	
+}
+
+div.points-cb {
+	clear:both;
+	font-size:0;
+}
+div.button_wrapper {
+	float:left;
+	margin-right:10px;
+	position:relative;
+}
+
+div.status_box {
+	margin:10px auto;
+	text-align:center;
+	width:450px;
+}
+div.points-current-levels, div.points-available-levels {
+	margin:0 0 10px;
+}
+div.points-level {
+	background-color:#fffbf7;
+	margin:10px 10px 0;
+	padding:10px;
+	position:relative;
+}
+div.points-level-icon {
+	background-color:#FFFFFF;
+	background-position:center center;
+	background-repeat:no-repeat;
+	border:1px solid #CCCCCC;
+	height:114px;
+	left:10px;
+	position:absolute;
+	top:10px;
+	width:114px;
+}
+div.points-level-icon img {
+	height:114px;
+	width:114px;
+}
+div.points-level-price {
+	font-size:12px;
+	font-weight:bold;
+	height:16px;
+	position:absolute;
+	right:10px;
+	top:10px;
+}
+div.points-level-price div.image {
+	background-position:right center;
+	background-repeat:no-repeat;
+	float:left;
+	height:16px;
+	position:relative;
+	width:32px;
+}
+div.points-level-price div.text {
+	float:left;
+	height:16px;
+	position:relative;
+}
+div.points-level-price img {
+	height:16px;
+	width:16px;
+}
+
+div.points-level-content {
+	min-height:116px;
+	padding-left:126px;
+}
+
+div.points-level-title {
+	font-size:12px;
+	font-weight:bold;
+}
+
+div.points-level-info {
+	padding-top:5px;
+}
+
+div.points-level-control {
+	padding-top:5px;
+}
+
+div.points-current-level {
+	margin:0;
+}
+div.points-current-level div.points-level {
+	background-color:#FFFFFF;
+	margin:0;
+	padding:10px;
+	position:relative;
+}
+div.points-level-description {
+	min-height:0;
+	padding:10px 0 0;
+}
+
+table.aqb-points-packages td {
+    border-bottom: none;
+    width:100%;
+	vertical-align: middle;
+}
+div.points-actions-wrapper button{
+	padding:2px;
+	text-align:center;
+	vertical-align:middle;
+}
+
+div.points-actions-wrapper div.button_input_wrapper span{
+	float:right;
+	margin-left:3px;
+}
+
+div.aqb-points-levels-info-block {
+	height:auto;
+	width:height;
+	overflow:hidden;
+}
+
+div.aqb-points-levels-pic {
+	float: left;
+    margin: 5px;
+    padding: 0;
+    text-align: center;
+}
+
+div.aqb-points-levels-item{
+	line-height: 16px;
+    margin: 3px 0;
+    padding-left: 10px;
+    position: relative;
+    width: 70%;
+	float:left;
+}
+
+table.points-levels-info th{
+  	text-align:center;
+	background-color:#ECECEC;
+	font-size:12px;
+	font-weight:bold;
+	text-transform:capitalize;
+}
+
+table.points-levels-info td{
+  	text-align:center;
+	vertical-align: middle;
+	padding: 3px;
+}

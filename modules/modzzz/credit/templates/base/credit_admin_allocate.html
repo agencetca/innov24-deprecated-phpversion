@@ -1,0 +1,57 @@
+<form id="__form_name__" enctype="multipart/form-data" method="post" action="" class="form_advanced">
+   <div class="form_advanced_wrapper level_form_wrapper">
+	<table class="form_advanced_table" cellpadding="0" cellspacing="0"> 
+	<tr>
+		<td class="caption" colspan=2>
+			__message__
+		</td>
+	</tr> 	
+	<tr>
+		<td class="caption">
+			<span class="required">*</span> 
+			<bx_text:_modzzz_credit_nickname />: 
+		</td> 
+		<td class="value">
+			<div class="clear_both"></div>
+			<div class="input_wrapper input_wrapper_text">
+				<input class="form_input_text" name="nickname" type="text" value="__nick_value__"> 
+				<div class="input_close input_close_text"></div>
+			</div>  
+			<div class="clear_both"></div>
+		</td>
+	</tr> 
+	<bx_if:search>
+	<tr>
+		<td class="caption"> 
+			<bx_text:_modzzz_credit_present_credits />: 
+		</td> 
+		<td class="value">
+			<div class="clear_both"></div>
+			<div class="input_wrapper input_wrapper_custom">
+				__present_credit_value__
+				<div class="input_close input_wrapper_custom"></div>
+			</div>  
+			<div class="clear_both"></div>
+		</td>
+	</tr> 
+	</bx_if:search> 
+	<tr>
+		<td class="caption">
+			<span class="required">*</span> 
+			<bx_text:_modzzz_credit_allocate_credits />: 
+		</td> 
+		<td class="value">
+			<div class="clear_both"></div>
+			<div class="input_wrapper input_wrapper_text">
+				<input class="form_input_text" name="credits" type="text" >
+				<div class="input_close input_close_text"></div>
+			</div>  
+			<img class="info" alt="info" src="__info_icon__" float_info="<bx_text:_modzzz_credit_allocate_explain />"> 
+			<div class="clear_both"></div>
+		</td>
+	</tr> 	
+	</table> 
+</div> 
+ 
+    __controls__
+</form>

@@ -1,0 +1,21 @@
+div.imagenews-post {    
+    padding: 10px;
+    position: relative;
+}
+iframe.imagenews-hidden {
+    width: 1px;
+    height: 1px;
+    display: none;
+}
+.imagenews-post .input_wrapper_custom img {
+    width:100%;
+}
+.imagenews-post .form_input_textarea[name="snippet"]{
+    height:45px;
+}
+
+/* expanding TinyMCE */
+.imagenews-post .input_wrapper_textarea {
+    width:1630px;
+}
+

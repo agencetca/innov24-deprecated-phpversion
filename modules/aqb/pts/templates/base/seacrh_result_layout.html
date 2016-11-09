@@ -1,0 +1,59 @@
+<h3><bx_text:_aqb_pts_fields_result />:</h3>
+<table class="search_result_layout" cellpadding="5" style="text-align: center;">
+	<tr class="header_row">
+		<td><b><bx_text:_aqb_pts_fields_col /> 1</b></td>
+		<td><b><bx_text:_aqb_pts_fields_col /> 2</b></td>
+	</tr>
+	<bx_if:has_fields_layout>
+		<bx_repeat:fields_layout>
+			<tr>__layout_row__</tr>
+		</bx_repeat:fields_layout>
+	</bx_if:has_fields_layout>
+	<bx_if:not_has_fields_layout>
+		<tr><td colspan="2"><bx_text:_aqb_pts_fields_no /></td></tr>
+	</bx_if:not_has_fields_layout>
+</table>
+
+<h3><bx_text:_aqb_pts_avail_fields />:</h3>
+<table class="search_result_layout" cellpadding="5">
+	<tr class="header_row">
+		<td><b><bx_text:_aqb_pts_fields_name /></b></td>
+		<td><b><bx_text:_aqb_pts_fields_action /></b></td>
+	</tr>
+	<bx_repeat:fields>
+	<tr>
+		<td>__field_name__</td>
+		<td>
+			<form action="__action_url__" method="POST" onsubmit="changeSearchFieldLayout(this); return false;">
+				<input type="hidden" name="ptid" value="__ptid__" />
+				<input type="hidden" name="fid" value="__fid__" />
+				<bx_if:field_inactive>
+				<bx_text:_aqb_pts_fields_col />&nbsp;
+					<select name="col">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="0"><bx_text:_aqb_pts_fields_both /></option>
+					</select>
+				<bx_text:_aqb_pts_fields_row />&nbsp;
+					<select name="row">
+						__possible_rows__
+					</select>
+				&nbsp;&nbsp;<input type="submit" value="<bx_text:_aqb_pts_pt_add />" />
+				<input type="hidden" name="add" value="1" />
+				</bx_if:field_inactive>
+				<bx_if:field_active>
+				<center><input type="submit" value="<bx_text:_aqb_pts_fields_remove />" /></center>
+				<input type="hidden" name="remove" value="1" />
+				</bx_if:field_active>
+			</form>
+		</td>
+	</tr>
+	</bx_repeat:fields>
+</table>
+<br />
+<form action="__action_url__" method="POST" onsubmit="changeSearchFieldLayout(this); return false;">
+	<input type="hidden" name="ptid" value="__ptid__" />
+	<input type="hidden" name="clear" value="1" />
+	<bx_text:_aqb_pts_fields_clear_reason />
+	<input type="submit" value="<bx_text:_aqb_pts_fields_clear />" name="clear" onclick="javascript: return confirm('<bx_text:_aqb_pts_fields_clear_sure />');"/>
+</form>

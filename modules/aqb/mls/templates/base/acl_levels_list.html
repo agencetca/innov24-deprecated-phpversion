@@ -1,0 +1,28 @@
+<bx_if:acl_exist>
+	<center>
+		<form action="__form_action__" method="POST" onsubmit="AQBMlsSubmitChanges(this); return false;">
+		<input type="hidden" name="save" value="1" />
+		<table cellpadding="15" class="acls_table">
+		    <tr class="header_row">
+		        <td width="50%"><bx_text:_aqb_mls_acl /></td><td width="50%"><bx_text:_aqb_mls_avail4 /></td>
+		    </tr>
+			<bx_repeat:acl_levels>
+		    	<tr>
+	        		<td>__acl_name__</td>
+	        		<td>__profile_types__</td>
+				</tr>
+        	</bx_repeat:acl_levels>
+        	<tr>
+        		<td colspan="2"><center><input type="submit" name="save" value="<bx_text:_aqb_mls_save />" /></center></td>
+        	</tr>
+		</table>
+		</form>
+	</center>
+</bx_if:acl_exist>
+<bx_if:acl_not_exist>
+	<center>
+		<div style="margin:10px;">
+			<bx_text:_aqb_mls_no_purchasable_acls />
+		</div>
+	</center>
+</bx_if:acl_not_exist>

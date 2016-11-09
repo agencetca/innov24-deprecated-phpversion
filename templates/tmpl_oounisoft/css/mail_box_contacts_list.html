@@ -1,0 +1,33 @@
+<div class="contacts_container">
+	<div class="evocontact">
+		<bx_repeat:members>
+		 <div class="singlecontact">
+					__member_icon__
+					<div class="information_block">
+						<div class="member_link">
+							<a href="__member_location__">__member_nick_name__</a>
+						</div>	
+						<div>
+							<img src="__member_sex_img__" alt="__member_sex_img_alt__" />
+							__member_age__
+							&nbsp;
+							__member_flag__
+							__member_country__
+						</div>
+					</div>
+					<div class="compose_block">
+						<div class="compose_img">
+							<a href="__current_page__?mode=compose&recipient_id=__member_id__">
+								<img src="__compose_img__" alt="compose" />
+							</a>	
+						</div>
+						<div>
+							__member_action_date__
+						</div>	
+					</div>
+		 </div>
+					<div class="clear_both"></div>
+				
+		</bx_repeat:members>
+	</div>
+</div>

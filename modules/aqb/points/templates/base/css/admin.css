@@ -1,0 +1,385 @@
+/***************************************************************************
+* 
+*     copyright            : (C) 2009 AQB Soft
+*     website              : http://www.aqbsoft.com
+*      
+* IMPORTANT: This is a commercial product made by AQB Soft. It cannot be modified for other than personal usage.
+* The "personal usage" means the product can be installed and set up for ONE domain name ONLY. 
+* To be able to use this product for another domain names you have to order another copy of this product (license).
+* 
+* This product cannot be redistributed for free or a fee without written permission from AQB Soft.
+* 
+* This notice may not be removed from the source code.
+* 
+***************************************************************************/
+
+table.points-action-items{
+  border:none;
+}
+
+table.points-action-items input{
+  float:none;
+  text-transformation: normal;
+}
+.input_wrapper_custom {
+  float:none;	
+}
+
+input.points-submit-button{
+   width:150px;
+}
+
+.points-members-wrapper{
+	position:relative;
+}
+
+.points-control-wrapper{
+	padding:9px;
+	position:relative;
+}
+ 
+.points-order-item-right {
+	float:right;
+	padding:0 10px 0 0;
+}
+
+.points-links-item-left {
+	float:right;
+	padding-left:10px;
+	position:relative;
+	margin-top:5px;
+}
+
+.points-control-links {
+	background-position:0 7px;
+	background-repeat:no-repeat;
+	float:left;
+	height:30px;
+	line-height:30px;
+	overflow:hidden;
+	position:relative;
+	text-indent:20px;
+	width:auto;
+}
+
+.points-order-item {
+	float:left;
+	line-height:30px;
+	padding:0 0 0 10px;
+	position:relative;
+}
+
+
+table.points-members-table tr{
+   	text-align:left;
+}
+
+.points-search {
+   width:100%;
+   height:auto;
+   overflow:hidden;
+   display:block;
+   margin-bottom:10px;
+}
+
+.points-member-section {
+   width:100%;
+   height:auto;
+   border:1px solid #DADADA;
+}
+
+table.points-members-table td{
+   	padding:2px 0;
+}
+
+table.points-members-table th{
+   	padding:2px 0;
+	text-align:left;
+}
+
+.points-active{
+	 text-align:left;	
+}
+
+div.points-control-panel {
+	background-color:#EDEDED;
+	font-size:11px;
+	height:30px;
+	line-height:30px;
+}
+
+.points-top-paginate{
+	position:absolute;
+	top:-30px;
+	width:auto;
+	border:0px solid red;
+	height:30px;
+}
+
+.points-sort-arrow {
+  position:relative;
+  vertical-align: middle;
+  width:15px;
+  height:15px;
+}
+
+.form_advanced_table  td.caption{
+	white-space:normal;
+}
+
+.points-buttons-bottom{
+	position:relative;
+	overflow:hidden;
+	width:100%;
+}
+
+.points-item-number-up {
+	position:absolute;
+	width:auto;
+	border:0px solid red;
+	right:20px;
+	top:-35px;
+}
+
+.points-item-number-bottom {
+	position:absolute;
+	width:auto;
+	border:0px solid red;
+	right:20px;
+	bottom:-35px;
+}
+
+.points-item-value {
+	position:relative;
+	width:auto;
+	font-weight:bold;
+	color:navy;
+}
+
+.points-control-wrapper .form_advanced_table .colspan .input_wrapper{
+	width:100%;
+} 
+
+.points-control-wrapper .input_wrapper_textarea {
+	width:250px;
+	height:250px;
+}
+
+.points-control-wrapper .form_input_textarea{
+   height:250px;	
+}
+
+.active a{
+  text-decoration:none;	
+}
+
+.not_active a{
+  color:#999999;
+  text-decoration:none;	
+}
+
+div.points-mlevels-label, div.points-mlevels-input, div.points-mlevels-btn {
+	float:left;
+	margin-left:10px;
+	position:relative;
+}
+
+div.points-mem-levels-panel{
+	margin-top:10px;
+}
+
+div.points-db-control-panel{
+	background-color:#EDEDED;
+	font-size:11px;
+	height:30px;
+	line-height:30px;
+}	
+
+div.points-mlevels-label{
+	float:left;
+	margin-left:10px;
+	position:relative;
+}
+
+div.points-mlevels-input
+{
+	margin:3px 0 4px 10px;
+	width:100px;
+}
+
+div.points-mlevels-btn  {
+	margin:1px 0 4px 10px;
+}
+
+div.points-mlevels-items {
+	margin:10px;
+	padding:0;
+}
+
+div.points-mlevels-title{
+   margin-top:10px;
+   margin-bottom:10px;
+   width:100%;	
+}
+
+
+span.points-admin-module-link{
+	float:left;
+	position:relative;
+	margin-left:30px;
+	/*font-weight:bold;*/
+}
+
+div.items-order-item-left{
+	overflow:hidden;
+	float:left;
+	margin-left: 10px;
+}
+.items-order-item-left select{
+	width:auto;
+}
+
+div.items-control-panel {
+	background-color:#EDEDED;
+	font-size:11px;
+	height:30px;
+	line-height:30px;
+}
+
+.items-order-item-right {
+	float:right;
+	padding:0 10px 0 0;
+}
+
+.items-search {
+   width:100%;
+   height:auto;
+   overflow:hidden;
+   display:block;
+   margin-bottom:10px;
+}
+
+.items-member-section {
+   height:auto;
+   border:1px solid #DADADA;
+   position:relative;
+}
+
+div.items-panel {
+	background-color:#EDEDED;
+	font-size:11px;
+	height:30px;
+	line-height:30px;
+}
+
+.order-select-right {
+	float:right;
+	padding:0 10px 0 0;
+}
+
+.order-select-left {
+	float:left;
+	padding-left:10px;
+	position:relative;
+}
+ 
+ 
+.items-wrapper{
+	position:relative;
+}
+
+.items-top-paginate{
+	position:absolute;
+	top:-30px;
+	width:auto;
+	border:0px solid red;
+	height:30px;
+}
+
+div.items-members-table{
+	margin:5px;
+}
+
+table.items-members-table tr{
+   	text-align:left;
+}
+
+
+table.items-members-table td{
+   	padding:2px 0;
+}
+
+table.items-members-table th{
+   	padding:2px 0;
+	text-align:left;
+}
+
+.items-active{
+	 text-align:left;	
+}
+
+.items-order-item-right {
+	float:right;
+	padding:0 10px 0 0;
+}
+
+.items-links-item-left {
+	float:right;
+	padding-left:10px;
+	position:relative;
+	margin-top:5px;
+}
+
+div.items-order-item-left{
+	overflow:hidden;
+	float:left;
+	margin-left: 10px;
+}
+.items-order-item-left select{
+	width:auto;
+}
+
+.items-sort-arrow {
+  position:relative;
+  vertical-align: middle;
+  width:15px;
+  height:15px;
+}
+
+.items-control-links {
+	background-position:0 7px;
+	background-repeat:no-repeat;
+	float:left;
+	height:30px;
+	line-height:30px;
+	overflow:hidden;
+	position:relative;
+	text-indent:20px;
+	width:auto;
+}
+
+.form_advanced_table  td.caption{
+	white-space:normal;
+}
+
+.active a{
+  text-decoration:none;	
+}
+
+.not_active a{
+  color:#999999;
+  text-decoration:none;	
+}
+
+.aqb-info-link{
+   font-size:12px;
+   font-weight:bold;	
+}
+
+.aqb-info-link a {
+   text-decoration: none;
+}
+
+div.adm-page-content{
+   width:690px;	
+}
